@@ -1,0 +1,32 @@
+import { cn } from "@/lib/utils";
+
+const tones = {
+  ink: "bg-ink text-paper",
+  accent: "bg-accent text-white",
+  success: "bg-success/10 text-success",
+  error: "bg-error/10 text-error",
+  neutral: "bg-stone-100 text-stone-600",
+  outline: "border border-ink text-ink",
+};
+
+export function Badge({
+  children,
+  tone = "neutral",
+  className,
+}: {
+  children: React.ReactNode;
+  tone?: keyof typeof tones;
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wideish",
+        tones[tone],
+        className
+      )}
+    >
+      {children}
+    </span>
+  );
+}

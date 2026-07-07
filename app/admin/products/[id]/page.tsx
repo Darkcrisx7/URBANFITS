@@ -12,8 +12,10 @@ export default function EditProductPage() {
   const [product, setProduct] = useState<Product | null | undefined>(undefined);
 
   useEffect(() => {
-    const found = getProducts().find((p) => p.id === params.id);
-    setProduct(found ?? null);
+    (async () => {
+      const found = (await getProducts()).find((p) => p.id === params.id);
+      setProduct(found ?? null);
+    })();
   }, [params.id]);
 
   if (product === undefined) return null;

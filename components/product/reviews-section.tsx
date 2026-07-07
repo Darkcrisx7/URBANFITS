@@ -16,13 +16,13 @@ export function ReviewsSection({ productId }: { productId: string }) {
   const toast = useToast();
 
   useEffect(() => {
-    setReviews(getReviews().filter((r) => r.productId === productId && r.approved));
+    getReviews().then((all) => setReviews(all.filter((r) => r.productId === productId && r.approved)));
   }, [productId]);
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!author.trim() || !comment.trim()) return;
-    const all = getReviews();
+    const all = await getReviews();
     const newReview: Review = {
       id: `r_${Date.now()}`,
       productId,
@@ -32,7 +32,7 @@ export function ReviewsSection({ productId }: { productId: string }) {
       date: new Date().toISOString().slice(0, 10),
       approved: false,
     };
-    saveReviews([newReview, ...all]);
+    await saveReviews([newReview, ...all]);
     toast.show("Review submitted — pending approval");
     setAuthor("");
     setComment("");

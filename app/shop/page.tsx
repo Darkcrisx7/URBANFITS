@@ -1,11 +1,13 @@
 import { Suspense } from "react";
 import { ShopBrowser } from "@/components/product/shop-browser";
 import { Container } from "@/components/ui/container";
-import { PRODUCTS } from "@/lib/mock-data";
+import { getProducts } from "@/lib/storage";
 
 export const metadata = { title: "Shop All" };
+export const dynamic = "force-dynamic";
 
-export default function ShopPage() {
+export default async function ShopPage() {
+  const products = await getProducts();
   return (
     <>
       <Container className="pt-10">
@@ -13,7 +15,7 @@ export default function ShopPage() {
         <h1 className="mt-2 font-display text-4xl font-medium tracking-tightest md:text-5xl">Shop All</h1>
       </Container>
       <Suspense>
-        <ShopBrowser products={PRODUCTS} />
+        <ShopBrowser products={products} />
       </Suspense>
     </>
   );

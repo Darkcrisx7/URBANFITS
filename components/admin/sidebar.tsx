@@ -15,7 +15,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { setAdminAuth } from "@/lib/storage";
+import { supabase } from "@/lib/supabase-client";
 
 const NAV = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -58,8 +58,8 @@ export function AdminSidebar() {
         })}
       </nav>
       <button
-        onClick={() => {
-          setAdminAuth(false);
+        onClick={async () => {
+          await supabase.auth.signOut();
           router.push("/admin/login");
         }}
         className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-stone-500 hover:bg-stone-100"

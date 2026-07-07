@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { AdminSidebar } from "@/components/admin/sidebar";
-import { getAdminAuth } from "@/lib/storage";
+import { supabase } from "@/lib/supabase-client";
+import { ADMIN_EMAILS } from "@/lib/admin-config";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -16,11 +17,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       setChecked(true);
       return;
     }
-    if (!getAdminAuth()) {
-      router.replace("/admin/login");
-    } else {
-      setChecked(true);
+
+    async function check() {
+      const { data } = await supabase.auth.getSession();
+      const email = data.session?.user.email ?? "";
+      if (!data.session || !ADMIN_EMAILS.includes(email)) {
+        router.replace("/admin/login");
+      } else {
+        setChecked(true);
+      }
     }
+    check();
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session || !ADMIN_EMAILS.includes(session.user.email ?? "")) {
+        router.replace("/admin/login");
+      }
+    });
+    return () => sub.subscription.unsubscribe();
   }, [isLoginPage, router]);
 
   if (isLoginPage) return <>{children}</>;

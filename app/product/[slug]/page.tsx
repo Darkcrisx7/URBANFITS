@@ -1,14 +1,14 @@
 import { notFound } from "next/navigation";
-import { PRODUCTS } from "@/lib/mock-data";
+import { getProducts, getProductBySlug } from "@/lib/storage";
 import { ProductDetail } from "@/components/product/product-detail";
 
-export function generateStaticParams() {
-  return PRODUCTS.map((p) => ({ slug: p.slug }));
-}
+// New products / edits happen through the admin panel at runtime, so this
+// page renders fresh on every request rather than being frozen at build time.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const product = PRODUCTS.find((p) => p.slug === slug);
+  const product = await getProductBySlug(slug);
   if (!product) return {};
   return {
     title: product.name,
@@ -19,8 +19,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const product = PRODUCTS.find((p) => p.slug === slug);
+  const product = await getProductBySlug(slug);
   if (!product) notFound();
+  const allProducts = await getProducts();
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -51,7 +52,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <ProductDetail product={product} />
+      <ProductDetail product={product} allProducts={allProducts} />
     </>
   );
 }

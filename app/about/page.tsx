@@ -25,6 +25,10 @@ export default function AboutPage() {
           Every order ships with Cash on Delivery available across India, backed by a straightforward
           7-day return window — no fine print.
         </p>
+        <p>
+          UrbanFits.Store is independently run out of India — real people picking fabrics, packing
+          orders, and answering your messages on WhatsApp, not a faceless operation.
+        </p>
       </div>
     </Container>
   );

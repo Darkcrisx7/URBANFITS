@@ -29,30 +29,30 @@ export default function AdminCouponsPage() {
   const toast = useToast();
 
   useEffect(() => {
-    setCoupons(getCoupons());
+    getCoupons().then(setCoupons);
   }, []);
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.code.trim()) return;
     const updated = [...coupons.filter((c) => c.code !== form.code), { ...form, code: form.code.toUpperCase() }];
-    saveCoupons(updated);
+    await saveCoupons(updated);
     setCoupons(updated);
     setForm(emptyCoupon());
     setShowForm(false);
     toast.show("Coupon saved");
   }
 
-  function remove(code: string) {
+  async function remove(code: string) {
     const updated = coupons.filter((c) => c.code !== code);
-    saveCoupons(updated);
+    await saveCoupons(updated);
     setCoupons(updated);
     toast.show("Coupon deleted");
   }
 
-  function toggleActive(c: Coupon) {
+  async function toggleActive(c: Coupon) {
     const updated = coupons.map((x) => (x.code === c.code ? { ...x, active: !x.active } : x));
-    saveCoupons(updated);
+    await saveCoupons(updated);
     setCoupons(updated);
   }
 

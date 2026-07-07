@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
-import { getCustomers, getOrders } from "@/lib/storage";
+import { getCustomers } from "@/lib/storage";
 import { Customer } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 
@@ -11,26 +11,7 @@ export default function AdminCustomersPage() {
   const [query, setQuery] = useState("");
 
   useEffect(() => {
-    // Merge seed customers with anyone who has placed a real order this session.
-    const seed = getCustomers();
-    const orders = getOrders();
-    const fromOrders: Record<string, Customer> = {};
-    orders.forEach((o) => {
-      if (!fromOrders[o.customerEmail]) {
-        fromOrders[o.customerEmail] = {
-          id: o.customerEmail,
-          name: o.customerName,
-          email: o.customerEmail,
-          phone: o.customerPhone,
-          ordersCount: 0,
-          totalSpent: 0,
-          joinedAt: o.createdAt,
-        };
-      }
-      fromOrders[o.customerEmail].ordersCount += 1;
-      fromOrders[o.customerEmail].totalSpent += o.total;
-    });
-    setCustomers([...Object.values(fromOrders), ...seed]);
+    getCustomers().then(setCustomers);
   }, []);
 
   const filtered = customers.filter(

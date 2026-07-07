@@ -14,7 +14,7 @@ export default function WishlistPage() {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    setProducts(getProducts());
+    getProducts().then(setProducts);
   }, []);
 
   const items = products.filter((p) => wishlist.ids.includes(p.id));

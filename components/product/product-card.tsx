@@ -36,7 +36,15 @@ export function ProductCard({ product }: { product: Product }) {
               product.images[0].gradient
             )}
           >
-            <div className="absolute inset-0 flex items-end p-4">
+            {product.images[0].url && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={product.images[0].url}
+                alt={product.name}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            )}
+            <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/40 to-transparent p-4">
               <span className="font-display text-sm text-white/80">{product.name}</span>
             </div>
             <div className="absolute left-3 top-3 flex flex-col gap-1.5">

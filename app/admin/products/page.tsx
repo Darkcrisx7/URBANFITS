@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Plus, Pencil, Trash2, Copy, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getProducts, saveProducts, deleteProduct, upsertProduct } from "@/lib/storage";
+import { getProducts, deleteProduct, upsertProduct } from "@/lib/storage";
 import { Product } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import { useToast } from "@/contexts/toast-context";
@@ -16,21 +16,21 @@ export default function AdminProductsPage() {
   const toast = useToast();
 
   useEffect(() => {
-    setProducts(getProducts());
+    refresh();
   }, []);
 
-  function refresh() {
-    setProducts(getProducts());
+  async function refresh() {
+    setProducts(await getProducts());
   }
 
-  function remove(id: string) {
+  async function remove(id: string) {
     if (!confirm("Delete this product? This cannot be undone.")) return;
-    deleteProduct(id);
+    await deleteProduct(id);
     refresh();
     toast.show("Product deleted");
   }
 
-  function duplicate(p: Product) {
+  async function duplicate(p: Product) {
     const copy: Product = {
       ...p,
       id: `p_${Date.now()}`,
@@ -38,14 +38,14 @@ export default function AdminProductsPage() {
       name: `${p.name} (Copy)`,
       status: "draft",
     };
-    upsertProduct(copy);
+    await upsertProduct(copy);
     refresh();
     toast.show("Product duplicated as draft");
   }
 
-  function toggleStatus(p: Product) {
+  async function toggleStatus(p: Product) {
     const next: Product = { ...p, status: p.status === "published" ? "hidden" : "published" };
-    upsertProduct(next);
+    await upsertProduct(next);
     refresh();
   }
 
@@ -91,7 +91,12 @@ export default function AdminProductsPage() {
                 <tr key={p.id} className="border-b border-stone-100 last:border-0">
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-3">
-                      <div className={`h-10 w-10 shrink-0 rounded-lg bg-gradient-to-br ${p.images[0].gradient}`} />
+                      {p.images[0].url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={p.images[0].url} alt={p.name} className="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                      ) : (
+                        <div className={`h-10 w-10 shrink-0 rounded-lg bg-gradient-to-br ${p.images[0].gradient}`} />
+                      )}
                       <span className="font-medium">{p.name}</span>
                     </div>
                   </td>

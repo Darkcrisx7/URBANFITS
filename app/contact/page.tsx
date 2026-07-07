@@ -6,6 +6,7 @@ import { Mail, Phone, MapPin, Instagram, Twitter, CheckCircle2 } from "lucide-re
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
+import { CONTACT, whatsappLink } from "@/lib/contact";
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
@@ -55,14 +56,28 @@ export default function ContactPage() {
 
           <div className="mt-10 space-y-4 text-sm text-stone-600">
             <div className="flex items-center gap-3">
-              <Mail size={18} className="text-stone-400" /> support@urbanfits.store
+              <Mail size={18} className="text-stone-400" />
+              <a href={`mailto:${CONTACT.email}`} className="hover:text-ink">{CONTACT.email}</a>
             </div>
             <div className="flex items-center gap-3">
-              <Phone size={18} className="text-stone-400" /> +91 80000 00000
+              <Phone size={18} className="text-stone-400" />
+              <a href={`tel:${CONTACT.phone1.replace(/\s/g, "")}`} className="hover:text-ink">{CONTACT.phone1}</a>
+            </div>
+            <div className="flex items-center gap-3">
+              <Phone size={18} className="text-stone-400" />
+              <a href={`tel:${CONTACT.phone2.replace(/\s/g, "")}`} className="hover:text-ink">{CONTACT.phone2}</a>
             </div>
             <div className="flex items-center gap-3">
               <MapPin size={18} className="text-stone-400" /> Bengaluru, Karnataka, India
             </div>
+            <a
+              href={whatsappLink()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#1ebc59]"
+            >
+              Chat on WhatsApp
+            </a>
             <div className="flex gap-4 pt-2 text-stone-400">
               <Instagram size={18} className="cursor-pointer hover:text-ink" />
               <Twitter size={18} className="cursor-pointer hover:text-ink" />

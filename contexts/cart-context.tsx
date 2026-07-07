@@ -24,7 +24,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setLines(getCartRaw());
-    setProducts(getProducts());
+    getProducts().then(setProducts);
     setHydrated(true);
   }, []);
 

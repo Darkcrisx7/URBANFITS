@@ -6,16 +6,22 @@ import { Testimonials } from "@/components/home/testimonials";
 import { NewsletterForm } from "@/components/home/newsletter-form";
 import { ProductGrid } from "@/components/product/product-grid";
 import { Container, SectionHeading } from "@/components/ui/container";
-import { PRODUCTS, BANNERS } from "@/lib/mock-data";
+import { getProducts } from "@/lib/storage";
+import { BANNERS } from "@/lib/mock-data";
 
-export default function HomePage() {
+// Re-fetch from Supabase on every request so admin edits show up
+// immediately on the live site instead of waiting for a redeploy.
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const PRODUCTS = await getProducts();
   const featured = PRODUCTS.filter((p) => p.status === "published").slice(0, 8);
   const trending = PRODUCTS.filter((p) => p.isNew || p.isFlashSale);
   const bestSellers = PRODUCTS.filter((p) => p.isBestSeller);
 
   return (
     <>
-      <Hero />
+      <Hero featuredA={PRODUCTS[0]} featuredB={PRODUCTS[2]} />
 
       <section className="py-20 md:py-28">
         <Container>

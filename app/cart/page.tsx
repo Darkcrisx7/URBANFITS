@@ -17,8 +17,8 @@ export default function CartPage() {
   const [couponInput, setCouponInput] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number } | null>(null);
 
-  function applyCoupon() {
-    const coupons = getCoupons();
+  async function applyCoupon() {
+    const coupons = await getCoupons();
     const match = coupons.find(
       (c) => c.code.toLowerCase() === couponInput.trim().toLowerCase() && c.active
     );

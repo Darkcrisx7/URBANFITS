@@ -14,11 +14,10 @@ import { useWishlist } from "@/contexts/wishlist-context";
 import { useToast } from "@/contexts/toast-context";
 import { ReviewsSection } from "./reviews-section";
 import { ProductGrid } from "./product-grid";
-import { PRODUCTS } from "@/lib/mock-data";
 
 const RECENT_KEY = "uf_recently_viewed";
 
-export function ProductDetail({ product }: { product: Product }) {
+export function ProductDetail({ product, allProducts }: { product: Product; allProducts: Product[] }) {
   const [size, setSize] = useState(product.sizes[0]);
   const [color, setColor] = useState(product.colors[0].name);
   const [quantity, setQuantity] = useState(1);
@@ -58,10 +57,10 @@ export function ProductDetail({ product }: { product: Product }) {
     }
   }
 
-  const related = PRODUCTS.filter(
+  const related = allProducts.filter(
     (p) => p.category === product.category && p.id !== product.id
   ).slice(0, 4);
-  const recentlyViewed = PRODUCTS.filter((p) => recentIds.includes(p.id));
+  const recentlyViewed = allProducts.filter((p) => recentIds.includes(p.id));
 
   return (
     <div className="pb-24">

@@ -12,8 +12,12 @@ import { OrderStatusBadge } from "@/components/order-status-badge";
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
 
+  // NOTE: this currently lists every order in the store, not just this
+  // visitor's — there's no real customer login yet to filter by. Fine for
+  // now while the store is being tested, but should be scoped to the
+  // logged-in customer once customer auth (phase 3) is wired in.
   useEffect(() => {
-    setOrders(getOrders());
+    getOrders().then(setOrders);
   }, []);
 
   return (

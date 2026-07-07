@@ -28,30 +28,30 @@ export default function AdminBannersPage() {
   const toast = useToast();
 
   useEffect(() => {
-    setBanners(getBanners());
+    getBanners().then(setBanners);
   }, []);
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.title.trim()) return;
     const updated = [...banners, form];
-    saveBanners(updated);
+    await saveBanners(updated);
     setBanners(updated);
     setForm(emptyBanner());
     setShowForm(false);
     toast.show("Banner added");
   }
 
-  function remove(id: string) {
+  async function remove(id: string) {
     const updated = banners.filter((b) => b.id !== id);
-    saveBanners(updated);
+    await saveBanners(updated);
     setBanners(updated);
     toast.show("Banner deleted");
   }
 
-  function toggleActive(b: Banner) {
+  async function toggleActive(b: Banner) {
     const updated = banners.map((x) => (x.id === b.id ? { ...x, active: !x.active } : x));
-    saveBanners(updated);
+    await saveBanners(updated);
     setBanners(updated);
   }
 

@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, ImageUp, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { Product, ProductVariant, Category } from "@/lib/types";
-import { upsertProduct } from "@/lib/storage";
+import { upsertProduct, uploadProductImage } from "@/lib/storage";
 import { slugify } from "@/lib/utils";
 import { useToast } from "@/contexts/toast-context";
 import { CATEGORIES } from "@/lib/mock-data";
@@ -52,6 +52,9 @@ export function ProductForm({ initial }: { initial?: Product }) {
   const [variants, setVariants] = useState<ProductVariant[]>(
     product.variants.length > 0 ? product.variants : []
   );
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   function addVariant() {
     setVariants((v) => [
@@ -68,8 +71,42 @@ export function ProductForm({ initial }: { initial?: Product }) {
     setVariants((v) => v.filter((_, idx) => idx !== i));
   }
 
-  function submit(e: React.FormEvent) {
+  async function onFilesSelected(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? []);
+    if (files.length === 0) return;
+    setUploading(true);
+    try {
+      for (const file of files) {
+        const url = await uploadProductImage(file);
+        setProduct((p) => {
+          // Drop the default placeholder (no url) the first time a real
+          // photo is added, then just append after that.
+          const withoutPlaceholder = p.images.filter((img) => img.url);
+          return {
+            ...p,
+            images: [...withoutPlaceholder, { gradient: GRADIENTS[0], label: p.name || "Product", url }],
+          };
+        });
+      }
+      toast.show(files.length > 1 ? "Photos uploaded" : "Photo uploaded");
+    } catch (err: any) {
+      toast.show(err?.message || "Photo upload failed — check your Supabase Storage bucket", "error");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
+
+  function removeImage(i: number) {
+    setProduct((p) => {
+      const next = p.images.filter((_, idx) => idx !== i);
+      return { ...p, images: next.length ? next : [{ gradient: GRADIENTS[0], label: p.name || "Product" }] };
+    });
+  }
+
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
+    setSaving(true);
     const sizes = sizesInput.split(",").map((s) => s.trim()).filter(Boolean);
     const final: Product = {
       ...product,
@@ -77,9 +114,15 @@ export function ProductForm({ initial }: { initial?: Product }) {
       sizes,
       variants,
     };
-    upsertProduct(final);
-    toast.show(initial ? "Product updated" : "Product created");
-    router.push("/admin/products");
+    try {
+      await upsertProduct(final);
+      toast.show(initial ? "Product updated" : "Product created");
+      router.push("/admin/products");
+    } catch {
+      toast.show("Couldn't save — check your Supabase connection", "error");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -174,6 +217,50 @@ export function ProductForm({ initial }: { initial?: Product }) {
       </div>
 
       <div className="rounded-2xl border border-stone-200 bg-paper p-6">
+        <h2 className="mb-4 font-display text-lg font-medium">Photos</h2>
+        <div className="flex flex-wrap gap-3">
+          {product.images.map((img, i) => (
+            <div key={i} className="group relative h-24 w-24 shrink-0 overflow-hidden rounded-xl">
+              {img.url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={img.url} alt={img.label} className="h-full w-full object-cover" />
+              ) : (
+                <div className={`h-full w-full bg-gradient-to-br ${img.gradient}`} />
+              )}
+              <button
+                type="button"
+                onClick={() => removeImage(i)}
+                className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                aria-label="Remove photo"
+              >
+                <X size={13} />
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            className="flex h-24 w-24 shrink-0 flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-stone-300 text-stone-400 hover:border-ink hover:text-ink"
+          >
+            {uploading ? <Loader2 size={18} className="animate-spin" /> : <ImageUp size={18} />}
+            <span className="text-[10px]">{uploading ? "Uploading…" : "Add photo"}</span>
+          </button>
+        </div>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={onFilesSelected}
+          className="hidden"
+        />
+        <p className="mt-3 text-xs text-stone-400">
+          JPG or PNG. Uploaded photos are stored in Supabase Storage and replace the placeholder gradient.
+        </p>
+      </div>
+
+      <div className="rounded-2xl border border-stone-200 bg-paper p-6">
         <h2 className="mb-4 font-display text-lg font-medium">Sizes</h2>
         <Label>Available sizes (comma separated)</Label>
         <Input value={sizesInput} onChange={(e) => setSizesInput(e.target.value)} placeholder="S, M, L, XL" />
@@ -217,8 +304,8 @@ export function ProductForm({ initial }: { initial?: Product }) {
       </div>
 
       <div className="flex gap-3">
-        <Button type="submit" size="lg">
-          {initial ? "Save Changes" : "Create Product"}
+        <Button type="submit" size="lg" disabled={saving || uploading}>
+          {saving ? "Saving…" : initial ? "Save Changes" : "Create Product"}
         </Button>
         <Button type="button" variant="secondary" size="lg" onClick={() => router.push("/admin/products")}>
           Cancel

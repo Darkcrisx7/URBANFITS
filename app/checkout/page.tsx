@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,8 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { useCart } from "@/contexts/cart-context";
 import { formatCurrency, generateOrderId } from "@/lib/utils";
-import { getCoupons, saveOrder } from "@/lib/storage";
-import { Order, OrderItem } from "@/lib/types";
+import { getCoupons, saveOrder, upsertCustomerByEmail } from "@/lib/storage";
+import { Order, OrderItem, Coupon } from "@/lib/types";
 import { useToast } from "@/contexts/toast-context";
 
 const checkoutSchema = z.object({
@@ -36,6 +36,11 @@ function CheckoutInner() {
   const toast = useToast();
   const couponCode = searchParams.get("coupon");
   const [placing, setPlacing] = useState(false);
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
+
+  useEffect(() => {
+    if (couponCode) getCoupons().then(setCoupons);
+  }, [couponCode]);
 
   const {
     register,
@@ -48,7 +53,7 @@ function CheckoutInner() {
 
   let discount = 0;
   if (couponCode) {
-    const coupon = getCoupons().find((c) => c.code === couponCode && c.active);
+    const coupon = coupons.find((c) => c.code === couponCode && c.active);
     if (coupon && cart.subtotal >= coupon.minPurchase) {
       discount = coupon.type === "percentage" ? Math.round((cart.subtotal * coupon.value) / 100) : coupon.value;
     }
@@ -102,8 +107,8 @@ function CheckoutInner() {
     };
 
     // Simulated network delay so the placing-order state is visible.
-    setTimeout(() => {
-      saveOrder(order);
+    setTimeout(async () => {
+      await Promise.all([saveOrder(order), upsertCustomerByEmail(data.fullName, data.email, data.phone)]);
       cart.clear();
       toast.show("Order placed successfully");
       router.push(`/order-confirmation/${order.id}`);

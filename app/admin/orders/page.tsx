@@ -17,13 +17,13 @@ export default function AdminOrdersPage() {
   const toast = useToast();
 
   useEffect(() => {
-    setOrders(getOrders());
+    getOrders().then(setOrders);
   }, []);
 
-  function changeStatus(order: Order, status: OrderStatus) {
+  async function changeStatus(order: Order, status: OrderStatus) {
     const updated: Order = { ...order, status, paymentStatus: status === "delivered" ? "paid" : order.paymentStatus };
-    updateOrder(updated);
-    setOrders(getOrders());
+    await updateOrder(updated);
+    setOrders(await getOrders());
     toast.show(`Order ${order.id} marked as ${status}`);
   }
 

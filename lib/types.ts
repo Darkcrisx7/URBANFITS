@@ -37,7 +37,7 @@ export interface Product {
   colors: { name: string; hex: string }[];
   sizes: string[];
   variants: ProductVariant[];
-  images: { gradient: string; label: string }[];
+  images: { gradient: string; label: string; url?: string }[];
   rating: number;
   reviewCount: number;
   isNew: boolean;

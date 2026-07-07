@@ -102,3 +102,43 @@ create table if not exists banners (
 -- alter table orders enable row level security;
 -- create policy "Customers can view own orders" on orders
 --   for select using (auth.uid() = customer_id);
+--
+-- IMPORTANT — orders/customers are currently readable by anyone with the
+-- anon key (i.e. by design right now, since there's no customer login to
+-- scope by yet). /orders in the app lists every order in the store, not
+-- just the current visitor's. Fine while testing; before real launch,
+-- either add customer auth + RLS (uncomment above once wired in) or at
+-- minimum don't publicize the /orders URL.
+
+-- ---------------------------------------------------------------------
+-- Admin login (Supabase Auth)
+-- ---------------------------------------------------------------------
+-- The admin panel now uses real Supabase Auth instead of a hardcoded
+-- password. One-time setup:
+--   1. Supabase Dashboard → Authentication → Users → Add user
+--   2. Enter the email/password you want to log into /admin/login with
+--   3. Add that same email to ADMIN_EMAILS in lib/admin-config.ts
+-- Only emails in that allowlist can reach the admin panel, even if someone
+-- else signs up on your Supabase project later.
+
+-- ---------------------------------------------------------------------
+-- Product photo storage bucket
+-- ---------------------------------------------------------------------
+-- Run this too (or create the bucket manually via Storage > New bucket
+-- in the Supabase dashboard, named exactly "product-images", set Public).
+-- If creating it here via SQL instead of the dashboard UI:
+insert into storage.buckets (id, name, public)
+values ('product-images', 'product-images', true)
+on conflict (id) do nothing;
+
+-- Allow anyone to read images (needed so photos show on the public site).
+create policy "Public read access for product images"
+on storage.objects for select
+using (bucket_id = 'product-images');
+
+-- Allow uploads from the app (anon key). Fine for now since the admin
+-- panel login is still a demo gate, not real auth — tighten this once
+-- Supabase Auth is wired in for admin.
+create policy "Anyone can upload product images"
+on storage.objects for insert
+with check (bucket_id = 'product-images');

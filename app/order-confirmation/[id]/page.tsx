@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { CheckCircle2, Truck, Download } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
-import { getOrders } from "@/lib/storage";
+import { getOrderById } from "@/lib/storage";
 import { Order } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 
@@ -15,8 +15,7 @@ export default function OrderConfirmationPage({ params }: { params: Promise<{ id
   const [order, setOrder] = useState<Order | null | undefined>(undefined);
 
   useEffect(() => {
-    const found = getOrders().find((o) => o.id === id);
-    setOrder(found ?? null);
+    getOrderById(id).then((found) => setOrder(found ?? null));
   }, [id]);
 
   if (order === undefined) return null;

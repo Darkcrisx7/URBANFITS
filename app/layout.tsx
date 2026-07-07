@@ -5,6 +5,7 @@ import { Providers } from "./providers";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { MainWrapper } from "@/components/layout/main-wrapper";
+import { WhatsAppButton } from "@/components/layout/whatsapp-button";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-display" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-body" });
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           <MainWrapper>{children}</MainWrapper>
           <Footer />
+          <WhatsAppButton />
         </Providers>
       </body>
     </html>

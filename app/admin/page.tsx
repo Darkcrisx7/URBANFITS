@@ -16,9 +16,9 @@ export default function AdminDashboardPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
 
   useEffect(() => {
-    setOrders(getOrders());
-    setProducts(getProducts());
-    setCustomers(getCustomers());
+    getOrders().then(setOrders);
+    getProducts().then(setProducts);
+    getCustomers().then(setCustomers);
   }, []);
 
   const revenue = orders.reduce((s, o) => s + o.total, 0);

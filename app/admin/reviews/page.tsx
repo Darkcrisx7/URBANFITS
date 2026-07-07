@@ -14,29 +14,31 @@ export default function AdminReviewsPage() {
   const toast = useToast();
 
   useEffect(() => {
-    setReviews(getReviews());
-    const names: Record<string, string> = {};
-    getProducts().forEach((p) => (names[p.id] = p.name));
-    setProductNames(names);
+    getReviews().then(setReviews);
+    getProducts().then((products) => {
+      const names: Record<string, string> = {};
+      products.forEach((p) => (names[p.id] = p.name));
+      setProductNames(names);
+    });
   }, []);
 
-  function approve(id: string) {
+  async function approve(id: string) {
     const updated = reviews.map((r) => (r.id === id ? { ...r, approved: true } : r));
-    saveReviews(updated);
+    await saveReviews(updated);
     setReviews(updated);
     toast.show("Review approved");
   }
 
-  function hide(id: string) {
+  async function hide(id: string) {
     const updated = reviews.map((r) => (r.id === id ? { ...r, approved: false } : r));
-    saveReviews(updated);
+    await saveReviews(updated);
     setReviews(updated);
     toast.show("Review hidden");
   }
 
-  function remove(id: string) {
+  async function remove(id: string) {
     const updated = reviews.filter((r) => r.id !== id);
-    saveReviews(updated);
+    await saveReviews(updated);
     setReviews(updated);
     toast.show("Review deleted");
   }

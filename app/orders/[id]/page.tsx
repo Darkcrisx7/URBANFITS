@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
-import { getOrders } from "@/lib/storage";
+import { getOrderById } from "@/lib/storage";
 import { Order } from "@/lib/types";
 import { formatCurrency, cn } from "@/lib/utils";
 import { ORDER_STEPS, OrderStatusBadge } from "@/components/order-status-badge";
@@ -16,7 +16,7 @@ export default function TrackOrderPage({ params }: { params: Promise<{ id: strin
   const [order, setOrder] = useState<Order | null | undefined>(undefined);
 
   useEffect(() => {
-    setOrder(getOrders().find((o) => o.id === id) ?? null);
+    getOrderById(id).then((o) => setOrder(o ?? null));
   }, [id]);
 
   if (order === undefined) return null;

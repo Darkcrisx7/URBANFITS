@@ -7,17 +7,14 @@ import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
-import { PRODUCTS } from "@/lib/mock-data";
+import { Product } from "@/lib/types";
 
-export function Hero() {
+export function Hero({ featuredA, featuredB }: { featuredA?: Product; featuredB?: Product }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y1 = useTransform(scrollYProgress, [0, 1], [0, 120]);
   const y2 = useTransform(scrollYProgress, [0, 1], [0, -60]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
-
-  const floatA = PRODUCTS[0];
-  const floatB = PRODUCTS[2];
 
   return (
     <section ref={ref} className="relative overflow-hidden bg-ink pb-24 pt-16 text-paper md:pt-24">
@@ -72,29 +69,33 @@ export function Hero() {
           </motion.div>
         </motion.div>
 
-        <motion.div
-          style={{ y: y1 }}
-          initial={{ opacity: 0, scale: 0.9, rotate: -4 }}
-          animate={{ opacity: 1, scale: 1, rotate: -6 }}
-          transition={{ duration: 0.9, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute right-[6%] top-16 hidden w-52 rounded-2xl bg-paper p-3 shadow-lift lg:block"
-        >
-          <div className={`aspect-[4/5] rounded-xl bg-gradient-to-br ${floatA.images[0].gradient}`} />
-          <p className="mt-2 text-xs font-medium text-ink">{floatA.name}</p>
-          <p className="text-xs font-semibold text-ink">{formatCurrency(floatA.price)}</p>
-        </motion.div>
+        {featuredA && (
+          <motion.div
+            style={{ y: y1 }}
+            initial={{ opacity: 0, scale: 0.9, rotate: -4 }}
+            animate={{ opacity: 1, scale: 1, rotate: -6 }}
+            transition={{ duration: 0.9, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute right-[6%] top-16 hidden w-52 rounded-2xl bg-paper p-3 shadow-lift lg:block"
+          >
+            <div className={`aspect-[4/5] rounded-xl bg-gradient-to-br ${featuredA.images[0].gradient}`} />
+            <p className="mt-2 text-xs font-medium text-ink">{featuredA.name}</p>
+            <p className="text-xs font-semibold text-ink">{formatCurrency(featuredA.price)}</p>
+          </motion.div>
+        )}
 
-        <motion.div
-          style={{ y: y2 }}
-          initial={{ opacity: 0, scale: 0.9, rotate: 5 }}
-          animate={{ opacity: 1, scale: 1, rotate: 8 }}
-          transition={{ duration: 0.9, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute bottom-4 right-[20%] hidden w-44 rounded-2xl bg-paper p-3 shadow-lift xl:block"
-        >
-          <div className={`aspect-[4/5] rounded-xl bg-gradient-to-br ${floatB.images[0].gradient}`} />
-          <p className="mt-2 text-xs font-medium text-ink">{floatB.name}</p>
-          <p className="text-xs font-semibold text-ink">{formatCurrency(floatB.price)}</p>
-        </motion.div>
+        {featuredB && (
+          <motion.div
+            style={{ y: y2 }}
+            initial={{ opacity: 0, scale: 0.9, rotate: 5 }}
+            animate={{ opacity: 1, scale: 1, rotate: 8 }}
+            transition={{ duration: 0.9, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute bottom-4 right-[20%] hidden w-44 rounded-2xl bg-paper p-3 shadow-lift xl:block"
+          >
+            <div className={`aspect-[4/5] rounded-xl bg-gradient-to-br ${featuredB.images[0].gradient}`} />
+            <p className="mt-2 text-xs font-medium text-ink">{featuredB.name}</p>
+            <p className="text-xs font-semibold text-ink">{formatCurrency(featuredB.price)}</p>
+          </motion.div>
+        )}
       </Container>
 
       <div className="mt-16 overflow-hidden border-t border-white/10 py-4">

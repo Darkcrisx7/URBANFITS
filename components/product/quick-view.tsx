@@ -33,7 +33,12 @@ export function QuickView({
   return (
     <Dialog open={open} onClose={onClose}>
       <div className="grid gap-6 md:grid-cols-2">
-        <div className={cn("aspect-[4/5] rounded-2xl bg-gradient-to-br", product.images[0].gradient)} />
+        <div className={cn("relative aspect-[4/5] overflow-hidden rounded-2xl bg-gradient-to-br", product.images[0].gradient)}>
+          {product.images[0].url && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={product.images[0].url} alt={product.name} className="absolute inset-0 h-full w-full object-cover" />
+          )}
+        </div>
         <div>
           <h3 className="font-display text-2xl font-medium tracking-tightest">{product.name}</h3>
           <div className="mt-2">

@@ -2,12 +2,14 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { ShopBrowser } from "@/components/product/shop-browser";
 import { Container } from "@/components/ui/container";
-import { PRODUCTS, CATEGORIES } from "@/lib/mock-data";
+import { CATEGORIES } from "@/lib/mock-data";
+import { getProducts } from "@/lib/storage";
 import { Category } from "@/lib/types";
 
-export function generateStaticParams() {
-  return CATEGORIES.map((c) => ({ category: c.key }));
-}
+// Products change via the admin panel at runtime (Supabase), so these
+// category pages render fresh on every request instead of being frozen
+// at build time.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ category: string }> }) {
   const { category } = await params;
@@ -19,6 +21,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
   const { category } = await params;
   const cat = CATEGORIES.find((c) => c.key === category);
   if (!cat) notFound();
+  const products = await getProducts();
 
   return (
     <>
@@ -30,7 +33,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         <p className="mt-2 text-stone-500">{cat.blurb}</p>
       </Container>
       <Suspense>
-        <ShopBrowser products={PRODUCTS} lockedCategory={cat.key as Category} />
+        <ShopBrowser products={products} lockedCategory={cat.key as Category} />
       </Suspense>
     </>
   );

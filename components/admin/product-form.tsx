@@ -52,14 +52,29 @@ export function ProductForm({ initial }: { initial?: Product }) {
   const [variants, setVariants] = useState<ProductVariant[]>(
     product.variants.length > 0 ? product.variants : []
   );
+  const [colors, setColors] = useState<{ name: string; hex: string }[]>(
+    product.colors.length > 0 ? product.colors : [{ name: "Jet Black", hex: "#0A0A0A" }]
+  );
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  function addColor() {
+    setColors((c) => [...c, { name: "", hex: "#000000" }]);
+  }
+
+  function updateColor(i: number, patch: Partial<{ name: string; hex: string }>) {
+    setColors((c) => c.map((line, idx) => (idx === i ? { ...line, ...patch } : line)));
+  }
+
+  function removeColor(i: number) {
+    setColors((c) => c.filter((_, idx) => idx !== i));
+  }
+
   function addVariant() {
     setVariants((v) => [
       ...v,
-      { size: product.sizes[0] ?? "M", color: product.colors[0]?.name ?? "Jet Black", stock: 0, sku: "" },
+      { size: product.sizes[0] ?? "M", color: colors[0]?.name ?? "", stock: 0, sku: "" },
     ]);
   }
 
@@ -106,12 +121,24 @@ export function ProductForm({ initial }: { initial?: Product }) {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    const cleanColors = colors.filter((c) => c.name.trim());
+    if (cleanColors.length === 0) {
+      toast.show("Add at least one color", "error");
+      return;
+    }
+    const colorNames = new Set(cleanColors.map((c) => c.name));
+    const mismatched = variants.find((v) => v.color && !colorNames.has(v.color));
+    if (mismatched) {
+      toast.show(`Variant color "${mismatched.color}" doesn't match any color above — fix it or it'll show as out of stock`, "error");
+      return;
+    }
     setSaving(true);
     const sizes = sizesInput.split(",").map((s) => s.trim()).filter(Boolean);
     const final: Product = {
       ...product,
       slug: product.slug || slugify(product.name),
       sizes,
+      colors: cleanColors,
       variants,
     };
     try {
@@ -261,6 +288,37 @@ export function ProductForm({ initial }: { initial?: Product }) {
       </div>
 
       <div className="rounded-2xl border border-stone-200 bg-paper p-6">
+        <h2 className="mb-4 font-display text-lg font-medium">Colors</h2>
+        <p className="mb-4 text-xs text-stone-400">
+          These are the color options customers can choose on the product page. Each variant below must use one of these exact names.
+        </p>
+        <div className="space-y-3">
+          {colors.map((c, i) => (
+            <div key={i} className="grid grid-cols-[auto_1fr_auto] items-center gap-3">
+              <input
+                type="color"
+                value={c.hex}
+                onChange={(e) => updateColor(i, { hex: e.target.value })}
+                className="h-10 w-12 cursor-pointer rounded-lg border border-stone-300"
+                aria-label="Color swatch"
+              />
+              <Input
+                placeholder="Color name (e.g. Jet Black)"
+                value={c.name}
+                onChange={(e) => updateColor(i, { name: e.target.value })}
+              />
+              <button type="button" onClick={() => removeColor(i)} className="text-stone-400 hover:text-error">
+                <Trash2 size={16} />
+              </button>
+            </div>
+          ))}
+        </div>
+        <Button type="button" variant="secondary" className="mt-4" onClick={addColor}>
+          <Plus size={14} /> Add Color
+        </Button>
+      </div>
+
+      <div className="rounded-2xl border border-stone-200 bg-paper p-6">
         <h2 className="mb-4 font-display text-lg font-medium">Sizes</h2>
         <Label>Available sizes (comma separated)</Label>
         <Input value={sizesInput} onChange={(e) => setSizesInput(e.target.value)} placeholder="S, M, L, XL" />
@@ -276,11 +334,18 @@ export function ProductForm({ initial }: { initial?: Product }) {
                 value={v.size}
                 onChange={(e) => updateVariant(i, { size: e.target.value })}
               />
-              <Input
-                placeholder="Color"
+              <select
                 value={v.color}
                 onChange={(e) => updateVariant(i, { color: e.target.value })}
-              />
+                className="h-12 w-full rounded-xl border border-stone-300 px-3 text-sm outline-none focus:border-ink"
+              >
+                <option value="">Select color…</option>
+                {colors.map((c) => (
+                  <option key={c.name} value={c.name}>
+                    {c.name || "(unnamed)"}
+                  </option>
+                ))}
+              </select>
               <Input
                 type="number"
                 placeholder="Stock"

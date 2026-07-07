@@ -85,6 +85,7 @@ export interface OrderItem {
 
 export interface Order {
   id: string;
+  customerId?: string; // Supabase auth user id — undefined for guest checkout
   customerName: string;
   customerEmail: string;
   customerPhone: string;

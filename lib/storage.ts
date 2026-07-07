@@ -141,6 +141,7 @@ function write<T>(key: string, value: T) {
 function rowToOrder(row: any): Order {
   return {
     id: row.id,
+    customerId: row.customer_id ?? undefined,
     customerName: row.customer_name ?? "",
     customerEmail: row.customer_email ?? "",
     customerPhone: row.customer_phone ?? "",
@@ -163,6 +164,7 @@ function rowToOrder(row: any): Order {
 function orderToRow(order: Order) {
   return {
     id: order.id,
+    customer_id: order.customerId ?? null,
     customer_name: order.customerName,
     customer_email: order.customerEmail,
     customer_phone: order.customerPhone,
@@ -181,10 +183,29 @@ function orderToRow(order: Order) {
   };
 }
 
+// ADMIN ONLY — returns every order in the store. RLS (see supabase/rls.sql)
+// enforces this at the database level too: only a signed-in admin session
+// can actually read every row here, everyone else gets just their own.
 export async function getOrders(): Promise<Order[]> {
   const { data, error } = await supabase.from("orders").select("*").order("created_at", { ascending: false });
   if (error) {
     console.error("[getOrders] Supabase error:", error.message);
+    return [];
+  }
+  return (data ?? []).map(rowToOrder);
+}
+
+// Customer-facing — only the signed-in customer's own orders. Backed by
+// the same RLS policy, so even if this filter were removed, the database
+// itself would refuse to return anyone else's orders to a normal customer.
+export async function getMyOrders(customerId: string): Promise<Order[]> {
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*")
+    .eq("customer_id", customerId)
+    .order("created_at", { ascending: false });
+  if (error) {
+    console.error("[getMyOrders] Supabase error:", error.message);
     return [];
   }
   return (data ?? []).map(rowToOrder);
@@ -345,6 +366,26 @@ export async function saveReviews(reviews: Review[]): Promise<void> {
   }
 }
 
+// The product's `rating` / `review_count` columns are a cached summary —
+// they don't recalculate automatically when a review is approved, hidden,
+// or deleted, so admin review actions call this afterward to keep the
+// product page's star rating accurate.
+export async function syncProductRatingFromReviews(productId: string): Promise<void> {
+  const { data, error } = await supabase
+    .from("reviews")
+    .select("rating")
+    .eq("product_id", productId)
+    .eq("approved", true);
+  if (error) {
+    console.error("[syncProductRatingFromReviews] Supabase error:", error.message);
+    return;
+  }
+  const ratings = (data ?? []).map((r: any) => r.rating as number);
+  const reviewCount = ratings.length;
+  const rating = reviewCount ? Math.round((ratings.reduce((s, r) => s + r, 0) / reviewCount) * 10) / 10 : 0;
+  await supabase.from("products").update({ rating, review_count: reviewCount }).eq("id", productId);
+}
+
 // ---------- Customers (Supabase-backed) ----------
 // ordersCount / totalSpent aren't stored columns — they're computed from
 // the orders table so they're always accurate without a separate sync step.
@@ -373,9 +414,17 @@ export async function getCustomers(): Promise<Customer[]> {
 
 // Ensures a customers row exists for this email (called at checkout) —
 // upserts on email so repeat customers don't create duplicates.
+// For guest checkout — no logged-in customer id, so upsert on email instead.
 export async function upsertCustomerByEmail(name: string, email: string, phone: string): Promise<void> {
   const { error } = await supabase.from("customers").upsert({ name, email, phone }, { onConflict: "email" });
   if (error) console.error("[upsertCustomerByEmail] Supabase error:", error.message);
+}
+
+// For a logged-in customer — id must be their Supabase auth user id, so
+// that RLS policies (auth.uid() = id) and order scoping line up correctly.
+export async function upsertCustomerRecord(id: string, name: string, email: string, phone: string): Promise<void> {
+  const { error } = await supabase.from("customers").upsert({ id, name, email, phone }, { onConflict: "id" });
+  if (error) console.error("[upsertCustomerRecord] Supabase error:", error.message);
 }
 
 // ---------- Cart / Wishlist (client-only, per browser) ----------

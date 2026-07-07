@@ -19,7 +19,12 @@ export function computeDiscountPercent(price: number, compareAt?: number) {
 }
 
 export function generateOrderId() {
-  return `UF${Date.now().toString().slice(-8)}`;
+  // Includes a random component (not just a timestamp) so order IDs can't
+  // be guessed — this matters because guest checkout orders are viewable
+  // by anyone who has the ID (no login required), by design, like most
+  // guest-checkout order tracking.
+  const random = Math.random().toString(36).slice(2, 8).toUpperCase();
+  return `UF${Date.now().toString(36).toUpperCase()}${random}`;
 }
 
 export function slugify(input: string) {

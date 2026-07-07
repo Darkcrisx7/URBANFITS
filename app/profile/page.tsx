@@ -13,7 +13,7 @@ import { Address } from "@/lib/types";
 import { useToast } from "@/contexts/toast-context";
 
 export default function ProfilePage() {
-  const { user, logout } = useAuth();
+  const { user, logout, loading } = useAuth();
   const router = useRouter();
   const toast = useToast();
   const [addresses, setAddressesState] = useState<Address[]>([]);
@@ -34,6 +34,8 @@ export default function ProfilePage() {
     setForm({ fullName: "", line1: "", city: "", state: "", pincode: "", phone: "" });
     toast.show("Address saved");
   }
+
+  if (loading) return null;
 
   if (!user) {
     return (

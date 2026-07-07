@@ -11,8 +11,9 @@ import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { useCart } from "@/contexts/cart-context";
+import { useAuth } from "@/contexts/auth-context";
 import { formatCurrency, generateOrderId } from "@/lib/utils";
-import { getCoupons, saveOrder, upsertCustomerByEmail } from "@/lib/storage";
+import { getCoupons, saveOrder, upsertCustomerByEmail, upsertCustomerRecord } from "@/lib/storage";
 import { Order, OrderItem, Coupon } from "@/lib/types";
 import { useToast } from "@/contexts/toast-context";
 
@@ -31,6 +32,7 @@ type CheckoutForm = z.infer<typeof checkoutSchema>;
 
 function CheckoutInner() {
   const cart = useCart();
+  const { user } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const toast = useToast();
@@ -45,8 +47,19 @@ function CheckoutInner() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<CheckoutForm>({ resolver: zodResolver(checkoutSchema) });
+
+  // Prefill name/email once, if the customer is logged in — doesn't touch
+  // this again after mount, so it won't clobber anything they've typed.
+  useEffect(() => {
+    if (user) {
+      setValue("fullName", user.name);
+      setValue("email", user.email);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
 
   const shipping = cart.subtotal > 2000 || cart.subtotal === 0 ? 0 : 99;
   const tax = Math.round(cart.subtotal * 0.05);
@@ -78,6 +91,7 @@ function CheckoutInner() {
 
     const order: Order = {
       id: generateOrderId(),
+      customerId: user?.id,
       customerName: data.fullName,
       customerEmail: data.email,
       customerPhone: data.phone,
@@ -108,7 +122,10 @@ function CheckoutInner() {
 
     // Simulated network delay so the placing-order state is visible.
     setTimeout(async () => {
-      await Promise.all([saveOrder(order), upsertCustomerByEmail(data.fullName, data.email, data.phone)]);
+      const customerUpsert = user
+        ? upsertCustomerRecord(user.id, data.fullName, data.email, data.phone)
+        : upsertCustomerByEmail(data.fullName, data.email, data.phone);
+      await Promise.all([saveOrder(order), customerUpsert]);
       cart.clear();
       toast.show("Order placed successfully");
       router.push(`/order-confirmation/${order.id}`);

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Check, Trash2, EyeOff } from "lucide-react";
 import { Rating } from "@/components/ui/rating";
 import { Badge } from "@/components/ui/badge";
-import { getReviews, saveReviews, getProducts } from "@/lib/storage";
+import { getReviews, saveReviews, getProducts, syncProductRatingFromReviews } from "@/lib/storage";
 import { Review } from "@/lib/types";
 import { useToast } from "@/contexts/toast-context";
 
@@ -23,23 +23,29 @@ export default function AdminReviewsPage() {
   }, []);
 
   async function approve(id: string) {
+    const review = reviews.find((r) => r.id === id);
     const updated = reviews.map((r) => (r.id === id ? { ...r, approved: true } : r));
     await saveReviews(updated);
     setReviews(updated);
+    if (review) await syncProductRatingFromReviews(review.productId);
     toast.show("Review approved");
   }
 
   async function hide(id: string) {
+    const review = reviews.find((r) => r.id === id);
     const updated = reviews.map((r) => (r.id === id ? { ...r, approved: false } : r));
     await saveReviews(updated);
     setReviews(updated);
+    if (review) await syncProductRatingFromReviews(review.productId);
     toast.show("Review hidden");
   }
 
   async function remove(id: string) {
+    const review = reviews.find((r) => r.id === id);
     const updated = reviews.filter((r) => r.id !== id);
     await saveReviews(updated);
     setReviews(updated);
+    if (review) await syncProductRatingFromReviews(review.productId);
     toast.show("Review deleted");
   }
 

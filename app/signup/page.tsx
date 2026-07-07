@@ -10,18 +10,31 @@ import { useAuth } from "@/contexts/auth-context";
 import { useToast } from "@/contexts/toast-context";
 
 export default function SignupPage() {
-  const { login } = useAuth();
+  const { signUp } = useAuth();
   const router = useRouter();
   const toast = useToast();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError("");
     if (!name || !email || !password) return;
-    login(name, email);
-    toast.show("Account created — verification email would be sent here in production");
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+    setLoading(true);
+    const { error } = await signUp(name, email, password);
+    setLoading(false);
+    if (error) {
+      setError(error);
+      return;
+    }
+    toast.show("Account created — you're logged in");
     router.push("/profile");
   }
 
@@ -29,9 +42,7 @@ export default function SignupPage() {
     <Container className="flex justify-center py-20">
       <div className="w-full max-w-md">
         <h1 className="font-display text-3xl font-medium tracking-tightest">Create Account</h1>
-        <p className="mt-2 text-sm text-stone-500">
-          Demo authentication — no real account or email is created yet.
-        </p>
+        <p className="mt-2 text-sm text-stone-500">Track your orders and check out faster next time.</p>
         <form onSubmit={onSubmit} className="mt-8 space-y-4">
           <div>
             <Label>Full Name</Label>
@@ -43,13 +54,17 @@ export default function SignupPage() {
           </div>
           <div>
             <Label>Password</Label>
-            <Input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+            <Input
+              type="password"
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
-          <Button type="submit" size="lg" className="w-full">
-            Create Account
-          </Button>
-          <Button type="button" variant="secondary" size="lg" className="w-full">
-            Continue with Google
+          {error && <p className="text-xs text-error">{error}</p>}
+          <Button type="submit" size="lg" className="w-full" disabled={loading}>
+            {loading ? "Creating account…" : "Create Account"}
           </Button>
         </form>
         <p className="mt-6 text-center text-sm text-stone-500">

@@ -22,24 +22,31 @@ log in with the email/password you create for yourself in Supabase Auth (see
 - Products, orders, coupons, banners, and reviews all read/write to Supabase — admin edits show up
   on the live site immediately, for every visitor, not just your own browser
 - Product photo upload (admin → Products → Photos) — stored in Supabase Storage
-- Checkout → places a real order in the database, shows in Admin → Orders, generates a trackable
-  order ID, and upserts a customer record
+- Checkout → places a real order in the database, shows in Admin → Orders, generates an
+  unguessable trackable order ID, and upserts a customer record
 - Admin panel: dashboard with charts, full product CRUD, order status pipeline, coupons, banners,
   review moderation, customers, settings
 - Admin login uses real Supabase Auth (email/password) — see `lib/admin-config.ts` for the allowlist
+- **Customer accounts** — real signup/login via Supabase Auth (`contexts/auth-context.tsx`).
+  Logged-in customers only ever see their own orders at `/orders`, enforced both in the app and by
+  Postgres Row Level Security (`supabase/rls.sql`) — even a compromised anon key couldn't read
+  another customer's orders. Guest checkout is still allowed (no account required to buy); those
+  orders are viewable only via their own tracking link, not listed anywhere.
 - Coupons, tax, shipping calculation, stock/low-stock indicators
 - SEO: metadata, Open Graph, sitemap.xml, robots.txt, product structured data (JSON-LD)
 
 **Stand-ins you'll want to replace before a real launch:**
-- **Customer accounts** — customer-facing login/signup (`contexts/auth-context.tsx`) is still
-  demo-only: any name/email "logs in" with no password check. See
-  `lib/auth-supabase.example.ts` for the drop-in replacement using Supabase Auth. Cart and wishlist
-  stay in localStorage regardless (that's fine — they're meant to be per-device).
-- **Orders privacy** — `/orders` currently lists every order in the store, not just the logged-in
-  customer's, since there's no real customer auth to scope by yet. Fine while testing; tighten this
-  once customer accounts are wired in (see the note in `supabase/schema.sql`).
 - **Email notifications** — order confirmation emails aren't sent; that needs a mail
   provider (e.g. Resend) wired into a serverless function.
+- **Payments** — Cash on Delivery only (see below).
+- **Password reset** — there's no "forgot password" flow yet for customer accounts.
+
+## Setup
+
+After `supabase/schema.sql`, also run `supabase/rls.sql` once — it locks down who can read/write
+what (customers only see their own orders, only an admin session can write products/coupons/etc).
+Do this before you seed products or go live; see the seed script's notes for how it uses the
+service role key once RLS is active.
 
 ## Payments
 

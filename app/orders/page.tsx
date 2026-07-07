@@ -2,23 +2,30 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Container, SectionHeading } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
-import { getOrders } from "@/lib/storage";
+import { getMyOrders } from "@/lib/storage";
+import { useAuth } from "@/contexts/auth-context";
 import { Order } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import { OrderStatusBadge } from "@/components/order-status-badge";
 
 export default function OrdersPage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
 
-  // NOTE: this currently lists every order in the store, not just this
-  // visitor's — there's no real customer login yet to filter by. Fine for
-  // now while the store is being tested, but should be scoped to the
-  // logged-in customer once customer auth (phase 3) is wired in.
   useEffect(() => {
-    getOrders().then(setOrders);
-  }, []);
+    if (loading) return;
+    if (!user) {
+      router.replace("/login");
+      return;
+    }
+    getMyOrders(user.id).then(setOrders);
+  }, [user, loading, router]);
+
+  if (loading || !user) return null;
 
   return (
     <Container className="py-12">
@@ -26,7 +33,7 @@ export default function OrdersPage() {
       {orders.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-stone-300 py-24 text-center">
           <p className="font-display text-xl">No orders yet</p>
-          <p className="mt-2 text-sm text-stone-500">Orders placed on this browser will show up here.</p>
+          <p className="mt-2 text-sm text-stone-500">Orders you place while logged in will show up here.</p>
           <Link href="/shop">
             <Button className="mt-6">Start Shopping</Button>
           </Link>
@@ -56,3 +63,4 @@ export default function OrdersPage() {
     </Container>
   );
 }
+

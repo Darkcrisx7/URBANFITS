@@ -1,5 +1,3 @@
-"use client";
-
 import { Product, Order, Coupon, Banner, Review, Customer } from "./types";
 import { supabase, PRODUCT_IMAGES_BUCKET } from "./supabase-client";
 

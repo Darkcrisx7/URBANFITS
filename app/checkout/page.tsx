@@ -122,13 +122,24 @@ function CheckoutInner() {
 
     // Simulated network delay so the placing-order state is visible.
     setTimeout(async () => {
-      const customerUpsert = user
-        ? upsertCustomerRecord(user.id, data.fullName, data.email, data.phone)
-        : upsertCustomerByEmail(data.fullName, data.email, data.phone);
-      await Promise.all([saveOrder(order), customerUpsert]);
-      cart.clear();
-      toast.show("Order placed successfully");
-      router.push(`/order-confirmation/${order.id}`);
+      try {
+        // Customer row must exist BEFORE the order (orders.customer_id has
+        // a foreign key to customers.id) — sequencing this, instead of
+        // running both at once, is what avoids the race that was causing
+        // orders to intermittently fail to save.
+        if (user) {
+          await upsertCustomerRecord(user.id, data.fullName, data.email, data.phone);
+        } else {
+          await upsertCustomerByEmail(data.fullName, data.email, data.phone);
+        }
+        await saveOrder(order);
+        cart.clear();
+        toast.show("Order placed successfully");
+        router.push(`/order-confirmation/${order.id}`);
+      } catch (err: any) {
+        setPlacing(false);
+        toast.show(err?.message || "Couldn't place your order — please try again", "error");
+      }
     }, 700);
   }
 

@@ -42,6 +42,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(toAuthUser(session?.user ?? null));
+      // Safety net: whenever the browser confirms an active session (this
+      // fires only once the session is fully established, avoiding the
+      // timing gap right after signUp() where a request could still go
+      // out unauthenticated), make sure this customer's row exists. It's
+      // an upsert, so calling it again on every login is harmless.
+      if (session?.user) {
+        const authed = toAuthUser(session.user)!;
+        upsertCustomerRecord(authed.id, authed.name, authed.email).catch((err) => {
+          console.warn("[AuthProvider] customer row sync failed:", err?.message);
+        });
+      }
     });
     return () => sub.subscription.unsubscribe();
   }, []);
@@ -53,10 +64,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       options: { data: { name } },
     });
     if (error) return { error: error.message };
+    // Not awaited/thrown here on purpose — right after signUp() there can
+    // be a brief gap before the new session is fully active, so this can
+    // fail here even though everything is fine. The onAuthStateChange
+    // listener above retries this as soon as the session is confirmed, so
+    // signup itself should never fail because of it.
     if (data.user) {
-      // Create the matching customers row with the SAME id as the auth
-      // user, so order history and RLS policies can scope by auth.uid().
-      await upsertCustomerRecord(data.user.id, name, email, "");
+      upsertCustomerRecord(data.user.id, name, email).catch(() => {});
     }
     return {};
   }

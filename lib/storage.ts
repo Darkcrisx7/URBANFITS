@@ -213,12 +213,18 @@ export async function getMyOrders(customerId: string): Promise<Order[]> {
 
 export async function saveOrder(order: Order): Promise<void> {
   const { error } = await supabase.from("orders").insert(orderToRow(order));
-  if (error) console.error("[saveOrder] Supabase error:", error.message);
+  if (error) {
+    console.error("[saveOrder] Supabase error:", error.message);
+    throw new Error(error.message);
+  }
 }
 
 export async function updateOrder(order: Order): Promise<void> {
   const { error } = await supabase.from("orders").update(orderToRow(order)).eq("id", order.id);
-  if (error) console.error("[updateOrder] Supabase error:", error.message);
+  if (error) {
+    console.error("[updateOrder] Supabase error:", error.message);
+    throw new Error(error.message);
+  }
 }
 
 export async function getOrderById(id: string): Promise<Order | null> {
@@ -417,14 +423,24 @@ export async function getCustomers(): Promise<Customer[]> {
 // For guest checkout — no logged-in customer id, so upsert on email instead.
 export async function upsertCustomerByEmail(name: string, email: string, phone: string): Promise<void> {
   const { error } = await supabase.from("customers").upsert({ name, email, phone }, { onConflict: "email" });
-  if (error) console.error("[upsertCustomerByEmail] Supabase error:", error.message);
+  if (error) {
+    console.error("[upsertCustomerByEmail] Supabase error:", error.message);
+    throw new Error(error.message);
+  }
 }
 
 // For a logged-in customer — id must be their Supabase auth user id, so
 // that RLS policies (auth.uid() = id) and order scoping line up correctly.
-export async function upsertCustomerRecord(id: string, name: string, email: string, phone: string): Promise<void> {
-  const { error } = await supabase.from("customers").upsert({ id, name, email, phone }, { onConflict: "id" });
-  if (error) console.error("[upsertCustomerRecord] Supabase error:", error.message);
+// phone is optional so callers that don't have it yet (e.g. right after
+// signup) don't accidentally overwrite a phone number saved at checkout.
+export async function upsertCustomerRecord(id: string, name: string, email: string, phone?: string): Promise<void> {
+  const payload: Record<string, string> = { id, name, email };
+  if (phone) payload.phone = phone;
+  const { error } = await supabase.from("customers").upsert(payload, { onConflict: "id" });
+  if (error) {
+    console.error("[upsertCustomerRecord] Supabase error:", error.message);
+    throw new Error(error.message);
+  }
 }
 
 // ---------- Cart / Wishlist (client-only, per browser) ----------

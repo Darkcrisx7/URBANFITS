@@ -22,9 +22,13 @@ export default function AdminOrdersPage() {
 
   async function changeStatus(order: Order, status: OrderStatus) {
     const updated: Order = { ...order, status, paymentStatus: status === "delivered" ? "paid" : order.paymentStatus };
-    await updateOrder(updated);
-    setOrders(await getOrders());
-    toast.show(`Order ${order.id} marked as ${status}`);
+    try {
+      await updateOrder(updated);
+      setOrders(await getOrders());
+      toast.show(`Order ${order.id} marked as ${status}`);
+    } catch (err: any) {
+      toast.show(err?.message || "Couldn't update order status", "error");
+    }
   }
 
   return (

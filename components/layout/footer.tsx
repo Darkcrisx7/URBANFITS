@@ -13,58 +13,58 @@ export function Footer() {
   if (pathname?.startsWith("/admin")) return null;
 
   return (
-    <footer className="border-t border-stone-200 bg-stone-50">
+    <footer className="border-t border-white/10 bg-graphite">
       <Container className="grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr_1fr]">
         <div>
-          <Image src="/logo.jpeg" alt="Urban Fits Streetwear" width={48} height={48} className="rounded-full" />
-          <p className="mt-3 font-display text-xl font-semibold tracking-tightest">URBAN FITS</p>
-          <p className="mt-4 max-w-xs text-sm text-stone-500">
+          <Image src="/logo.jpeg" alt="Urban Fits Streetwear" width={48} height={48} className="rounded-full ring-1 ring-white/15" />
+          <p className="mt-3 font-display text-xl font-semibold tracking-tightest text-bone">URBAN FITS</p>
+          <p className="mt-4 max-w-xs text-sm text-silver/70">
             Engineered fits, made to last. Premium streetwear designed in-house, cut for movement.
           </p>
-          <p className="mt-2 max-w-xs text-xs text-stone-400">
+          <p className="mt-2 max-w-xs text-xs text-chrome">
             Independently run by a small team in India — real humans behind every order.
           </p>
-          <div className="mt-6 flex gap-4 text-stone-500">
-            <Instagram size={18} className="cursor-pointer hover:text-ink" />
-            <Twitter size={18} className="cursor-pointer hover:text-ink" />
-            <Youtube size={18} className="cursor-pointer hover:text-ink" />
+          <div className="mt-6 flex gap-4 text-chrome">
+            <Instagram size={18} className="cursor-pointer hover:text-bone" />
+            <Twitter size={18} className="cursor-pointer hover:text-bone" />
+            <Youtube size={18} className="cursor-pointer hover:text-bone" />
           </div>
         </div>
 
         <div>
-          <p className="mb-4 text-xs font-semibold uppercase tracking-wideish text-stone-400">Company</p>
-          <ul className="space-y-3 text-sm text-stone-600">
-            <li><Link href="/about" className="hover:text-ink">About</Link></li>
-            <li><Link href="/contact" className="hover:text-ink">Contact</Link></li>
-            <li><Link href="/shop" className="hover:text-ink">Shop</Link></li>
+          <p className="mb-4 font-mono text-xs font-medium uppercase tracking-wideish text-chrome">Company</p>
+          <ul className="space-y-3 text-sm text-silver/80">
+            <li><Link href="/about" className="hover:text-bone">About</Link></li>
+            <li><Link href="/contact" className="hover:text-bone">Contact</Link></li>
+            <li><Link href="/shop" className="hover:text-bone">Shop</Link></li>
           </ul>
         </div>
 
         <div>
-          <p className="mb-4 text-xs font-semibold uppercase tracking-wideish text-stone-400">Policies</p>
-          <ul className="space-y-3 text-sm text-stone-600">
-            <li><Link href="/policies/privacy" className="hover:text-ink">Privacy Policy</Link></li>
-            <li><Link href="/policies/terms" className="hover:text-ink">Terms of Service</Link></li>
-            <li><Link href="/policies/refund" className="hover:text-ink">Refund Policy</Link></li>
-            <li><Link href="/policies/shipping" className="hover:text-ink">Shipping Policy</Link></li>
+          <p className="mb-4 font-mono text-xs font-medium uppercase tracking-wideish text-chrome">Policies</p>
+          <ul className="space-y-3 text-sm text-silver/80">
+            <li><Link href="/policies/privacy" className="hover:text-bone">Privacy Policy</Link></li>
+            <li><Link href="/policies/terms" className="hover:text-bone">Terms of Service</Link></li>
+            <li><Link href="/policies/refund" className="hover:text-bone">Refund Policy</Link></li>
+            <li><Link href="/policies/shipping" className="hover:text-bone">Shipping Policy</Link></li>
           </ul>
         </div>
 
         <div>
-          <p className="mb-4 text-xs font-semibold uppercase tracking-wideish text-stone-400">Contact</p>
-          <ul className="space-y-3 text-sm text-stone-600">
+          <p className="mb-4 font-mono text-xs font-medium uppercase tracking-wideish text-chrome">Contact</p>
+          <ul className="space-y-3 text-sm text-silver/80">
             <li>
-              <a href={`tel:${CONTACT.phone1.replace(/\s/g, "")}`} className="flex items-center gap-2 hover:text-ink">
+              <a href={`tel:${CONTACT.phone1.replace(/\s/g, "")}`} className="flex items-center gap-2 hover:text-bone">
                 <Phone size={14} /> {CONTACT.phone1}
               </a>
             </li>
             <li>
-              <a href={`tel:${CONTACT.phone2.replace(/\s/g, "")}`} className="flex items-center gap-2 hover:text-ink">
+              <a href={`tel:${CONTACT.phone2.replace(/\s/g, "")}`} className="flex items-center gap-2 hover:text-bone">
                 <Phone size={14} /> {CONTACT.phone2}
               </a>
             </li>
             <li>
-              <a href={`mailto:${CONTACT.email}`} className="flex items-center gap-2 hover:text-ink">
+              <a href={`mailto:${CONTACT.email}`} className="flex items-center gap-2 hover:text-bone">
                 <Mail size={14} /> {CONTACT.email}
               </a>
             </li>
@@ -80,12 +80,12 @@ export function Footer() {
         </div>
 
         <div>
-          <p className="mb-4 text-xs font-semibold uppercase tracking-wideish text-stone-400">Stay in the loop</p>
+          <p className="mb-4 font-mono text-xs font-medium uppercase tracking-wideish text-chrome">Stay in the loop</p>
           <NewsletterForm compact />
         </div>
       </Container>
-      <div className="border-t border-stone-200 py-6">
-        <Container className="flex flex-col items-center justify-between gap-2 text-xs text-stone-400 md:flex-row">
+      <div className="border-t border-white/10 py-6">
+        <Container className="flex flex-col items-center justify-between gap-2 text-xs text-chrome md:flex-row">
           <p>© {new Date().getFullYear()} UrbanFits.Store. All rights reserved.</p>
           <p>Cash on Delivery available across India.</p>
         </Container>

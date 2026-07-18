@@ -31,9 +31,9 @@ export default function OrdersPage() {
     <Container className="py-12">
       <SectionHeading eyebrow="Your history" title="Orders" />
       {orders.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-stone-300 py-24 text-center">
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 py-24 text-center">
           <p className="font-display text-xl">No orders yet</p>
-          <p className="mt-2 text-sm text-stone-500">Orders you place while logged in will show up here.</p>
+          <p className="mt-2 text-sm text-silver/70">Orders you place while logged in will show up here.</p>
           <Link href="/shop">
             <Button className="mt-6">Start Shopping</Button>
           </Link>
@@ -44,11 +44,11 @@ export default function OrdersPage() {
             <Link
               key={o.id}
               href={`/orders/${o.id}`}
-              className="flex flex-col justify-between gap-3 rounded-2xl border border-stone-200 p-5 transition-colors hover:border-ink sm:flex-row sm:items-center"
+              className="flex flex-col justify-between gap-3 rounded-2xl border border-white/10 p-5 transition-colors hover:border-bone sm:flex-row sm:items-center"
             >
               <div>
                 <p className="text-sm font-semibold">{o.id}</p>
-                <p className="text-xs text-stone-500">
+                <p className="text-xs text-silver/70">
                   {new Date(o.createdAt).toLocaleDateString()} · {o.items.length} item(s)
                 </p>
               </div>

@@ -14,7 +14,7 @@ export function Trending({ products }: { products: Product[] }) {
   }
 
   return (
-    <section className="bg-stone-50 py-20 md:py-28">
+    <section className="bg-graphite2 py-20 md:py-28">
       <Container>
         <SectionHeading
           eyebrow="Right now"
@@ -23,14 +23,14 @@ export function Trending({ products }: { products: Product[] }) {
             <div className="hidden gap-2 md:flex">
               <button
                 onClick={() => scroll(-1)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-stone-300 hover:border-ink"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-bone hover:border-bone"
                 aria-label="Scroll left"
               >
                 <ChevronLeft size={16} />
               </button>
               <button
                 onClick={() => scroll(1)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-stone-300 hover:border-ink"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-bone hover:border-bone"
                 aria-label="Scroll right"
               >
                 <ChevronRight size={16} />

@@ -42,7 +42,7 @@ export default function SignupPage() {
     <Container className="flex justify-center py-20">
       <div className="w-full max-w-md">
         <h1 className="font-display text-3xl font-medium tracking-tightest">Create Account</h1>
-        <p className="mt-2 text-sm text-stone-500">Track your orders and check out faster next time.</p>
+        <p className="mt-2 text-sm text-silver/70">Track your orders and check out faster next time.</p>
         <form onSubmit={onSubmit} className="mt-8 space-y-4">
           <div>
             <Label>Full Name</Label>
@@ -67,9 +67,9 @@ export default function SignupPage() {
             {loading ? "Creating account…" : "Create Account"}
           </Button>
         </form>
-        <p className="mt-6 text-center text-sm text-stone-500">
+        <p className="mt-6 text-center text-sm text-silver/70">
           Already have an account?{" "}
-          <Link href="/login" className="text-accent">
+          <Link href="/login" className="text-chrome-bright">
             Log in
           </Link>
         </p>

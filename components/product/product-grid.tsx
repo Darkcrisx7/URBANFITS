@@ -4,9 +4,9 @@ import { ProductCard } from "./product-card";
 export function ProductGrid({ products }: { products: Product[] }) {
   if (products.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-stone-300 py-24 text-center">
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 py-24 text-center">
         <p className="font-display text-xl">No products match yet</p>
-        <p className="mt-2 text-sm text-stone-500">Try clearing a filter or searching something else.</p>
+        <p className="mt-2 text-sm text-silver/70">Try clearing a filter or searching something else.</p>
       </div>
     );
   }

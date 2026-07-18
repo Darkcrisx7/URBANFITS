@@ -41,7 +41,7 @@ export default function ProfilePage() {
     return (
       <Container className="flex flex-col items-center py-32 text-center">
         <p className="font-display text-2xl">You're not logged in</p>
-        <p className="mt-2 text-stone-500">Log in to view your profile, orders, and wishlist.</p>
+        <p className="mt-2 text-silver/70">Log in to view your profile, orders, and wishlist.</p>
         <Link href="/login">
           <Button className="mt-6" size="lg">
             Log In
@@ -54,12 +54,12 @@ export default function ProfilePage() {
   return (
     <Container className="py-12">
       <div className="mb-10 flex items-center gap-4">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-ink text-paper">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-bone text-void">
           <User size={24} />
         </div>
         <div>
           <h1 className="font-display text-2xl font-medium">{user.name}</h1>
-          <p className="text-sm text-stone-500">{user.email}</p>
+          <p className="text-sm text-silver/70">{user.email}</p>
         </div>
         <Button
           variant="ghost"
@@ -74,15 +74,15 @@ export default function ProfilePage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Link href="/orders" className="flex items-center gap-3 rounded-2xl border border-stone-200 p-5 hover:border-ink">
+        <Link href="/orders" className="flex items-center gap-3 rounded-2xl border border-white/10 p-5 hover:border-bone">
           <Package size={20} />
           <span className="text-sm font-medium">Order History</span>
         </Link>
-        <Link href="/wishlist" className="flex items-center gap-3 rounded-2xl border border-stone-200 p-5 hover:border-ink">
+        <Link href="/wishlist" className="flex items-center gap-3 rounded-2xl border border-white/10 p-5 hover:border-bone">
           <Heart size={20} />
           <span className="text-sm font-medium">Wishlist</span>
         </Link>
-        <div className="flex items-center gap-3 rounded-2xl border border-stone-200 p-5">
+        <div className="flex items-center gap-3 rounded-2xl border border-white/10 p-5">
           <MapPin size={20} />
           <span className="text-sm font-medium">{addresses.length} Saved Address(es)</span>
         </div>
@@ -99,7 +99,7 @@ export default function ProfilePage() {
           }
         />
         {showForm && (
-          <form onSubmit={addAddress} className="mb-6 grid gap-4 rounded-2xl border border-stone-200 p-6 sm:grid-cols-2">
+          <form onSubmit={addAddress} className="mb-6 grid gap-4 rounded-2xl border border-white/10 p-6 sm:grid-cols-2">
             <div>
               <Label>Full Name</Label>
               <Input required value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
@@ -131,8 +131,8 @@ export default function ProfilePage() {
         )}
         <div className="space-y-3">
           {addresses.map((a) => (
-            <div key={a.id} className="rounded-2xl border border-stone-200 p-5 text-sm text-stone-600">
-              <p className="font-medium text-ink">{a.fullName}</p>
+            <div key={a.id} className="rounded-2xl border border-white/10 p-5 text-sm text-silver/80">
+              <p className="font-medium text-bone">{a.fullName}</p>
               <p>
                 {a.line1}, {a.city}, {a.state} — {a.pincode}
               </p>

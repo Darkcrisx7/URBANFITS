@@ -6,7 +6,7 @@ export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputE
     <input
       ref={ref}
       className={cn(
-        "h-12 w-full rounded-xl border border-stone-300 bg-paper px-4 text-sm text-ink placeholder:text-stone-400 outline-none transition-colors focus:border-ink",
+        "h-12 w-full rounded-xl border border-[color:var(--c-border)] bg-[color:var(--c-surface)] px-4 text-sm text-[color:var(--c-ink)] outline-none transition-colors placeholder:text-[color:var(--c-muted)] focus:border-[color:var(--c-ink)]",
         className
       )}
       {...props}
@@ -20,7 +20,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<H
     <textarea
       ref={ref}
       className={cn(
-        "w-full rounded-xl border border-stone-300 bg-paper px-4 py-3 text-sm text-ink placeholder:text-stone-400 outline-none transition-colors focus:border-ink",
+        "w-full rounded-xl border border-[color:var(--c-border)] bg-[color:var(--c-surface)] px-4 py-3 text-sm text-[color:var(--c-ink)] outline-none transition-colors placeholder:text-[color:var(--c-muted)] focus:border-[color:var(--c-ink)]",
         className
       )}
       {...props}
@@ -31,7 +31,10 @@ Textarea.displayName = "Textarea";
 
 export function Label({ children, htmlFor }: { children: React.ReactNode; htmlFor?: string }) {
   return (
-    <label htmlFor={htmlFor} className="mb-1.5 block text-xs font-medium uppercase tracking-wideish text-stone-500">
+    <label
+      htmlFor={htmlFor}
+      className="mb-1.5 block text-xs font-medium uppercase tracking-wideish text-[color:var(--c-label)]"
+    >
       {children}
     </label>
   );

@@ -23,7 +23,7 @@ export default function OrderConfirmationPage({ params }: { params: Promise<{ id
   if (order === null) {
     return (
       <Container className="py-32 text-center">
-        <p className="text-stone-500">We couldn't find that order.</p>
+        <p className="text-silver/70">We couldn't find that order.</p>
         <Link href="/shop">
           <Button className="mt-6">Continue Shopping</Button>
         </Link>
@@ -44,16 +44,16 @@ export default function OrderConfirmationPage({ params }: { params: Promise<{ id
             <CheckCircle2 size={32} className="text-success" />
           </div>
           <h1 className="font-display text-3xl font-medium tracking-tightest">Order Confirmed</h1>
-          <p className="mt-2 text-stone-500">
-            Order <span className="font-semibold text-ink">{order.id}</span> has been placed — pay
+          <p className="mt-2 text-silver/70">
+            Order <span className="font-semibold text-bone">{order.id}</span> has been placed — pay
             {" "}{formatCurrency(order.total)} in cash on delivery.
           </p>
         </motion.div>
 
-        <div className="mt-10 rounded-2xl border border-stone-200 p-6">
-          <div className="flex items-center gap-3 border-b border-stone-200 pb-4">
-            <Truck size={18} className="text-stone-500" />
-            <p className="text-sm text-stone-600">
+        <div className="mt-10 rounded-2xl border border-white/10 p-6">
+          <div className="flex items-center gap-3 border-b border-white/10 pb-4">
+            <Truck size={18} className="text-silver/70" />
+            <p className="text-sm text-silver/80">
               Delivering to {order.address.line1}, {order.address.city}, {order.address.state} —{" "}
               {order.address.pincode}
             </p>
@@ -61,9 +61,9 @@ export default function OrderConfirmationPage({ params }: { params: Promise<{ id
           <div className="space-y-3 py-4">
             {order.items.map((item, i) => (
               <div key={i} className="flex justify-between text-sm">
-                <span className="text-stone-600">
+                <span className="text-silver/80">
                   {item.name} × {item.quantity}
-                  <span className="block text-xs text-stone-400">
+                  <span className="block text-xs text-chrome">
                     {item.color} · {item.size}
                   </span>
                 </span>
@@ -71,16 +71,16 @@ export default function OrderConfirmationPage({ params }: { params: Promise<{ id
               </div>
             ))}
           </div>
-          <div className="space-y-2 border-t border-stone-200 pt-4 text-sm">
-            <div className="flex justify-between text-stone-500">
+          <div className="space-y-2 border-t border-white/10 pt-4 text-sm">
+            <div className="flex justify-between text-silver/70">
               <span>Subtotal</span>
               <span>{formatCurrency(order.subtotal)}</span>
             </div>
-            <div className="flex justify-between text-stone-500">
+            <div className="flex justify-between text-silver/70">
               <span>Shipping</span>
               <span>{order.shipping === 0 ? "Free" : formatCurrency(order.shipping)}</span>
             </div>
-            <div className="flex justify-between text-stone-500">
+            <div className="flex justify-between text-silver/70">
               <span>Tax</span>
               <span>{formatCurrency(order.tax)}</span>
             </div>
@@ -90,7 +90,7 @@ export default function OrderConfirmationPage({ params }: { params: Promise<{ id
                 <span>-{formatCurrency(order.discount)}</span>
               </div>
             )}
-            <div className="flex justify-between border-t border-stone-200 pt-3 text-base font-semibold">
+            <div className="flex justify-between border-t border-white/10 pt-3 text-base font-semibold">
               <span>Total (Cash on Delivery)</span>
               <span>{formatCurrency(order.total)}</span>
             </div>

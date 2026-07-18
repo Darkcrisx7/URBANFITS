@@ -33,19 +33,19 @@ export function Header() {
   }
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-stone-200/70 bg-paper/80 backdrop-blur-lg">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-void/70 backdrop-blur-xl">
       <Container className="flex h-20 items-center justify-between">
         <div className="flex items-center gap-8">
           <button
-            className="lg:hidden"
+            className="text-bone lg:hidden"
             onClick={() => setMenuOpen(true)}
             aria-label="Open menu"
           >
             <Menu size={22} />
           </button>
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo.jpeg" alt="Urban Fits Streetwear" width={40} height={40} className="rounded-full" />
-            <span className="hidden font-display text-lg font-semibold tracking-tightest sm:block">
+            <Image src="/logo.jpeg" alt="Urban Fits Streetwear" width={40} height={40} className="rounded-full ring-1 ring-white/15" />
+            <span className="hidden font-display text-lg font-semibold tracking-tightest text-bone sm:block">
               URBAN FITS
             </span>
           </Link>
@@ -54,25 +54,25 @@ export function Header() {
               <Link
                 key={c.key}
                 href={`/shop/${c.key}`}
-                className="text-sm font-medium text-stone-600 transition-colors hover:text-ink"
+                className="text-sm font-medium text-silver/80 transition-colors hover:text-bone"
               >
                 {c.label}
               </Link>
             ))}
-            <Link href="/shop?tag=new" className="text-sm font-medium text-accent">
+            <Link href="/shop?tag=new" className="text-sm font-medium text-chrome-bright">
               New
             </Link>
           </nav>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 text-bone">
           <button aria-label="Search" onClick={() => setSearchOpen((s) => !s)}>
             <Search size={20} />
           </button>
           <Link href="/wishlist" className="relative" aria-label="Wishlist">
             <Heart size={20} />
             {wishlist.ids.length > 0 && (
-              <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-[10px] text-white">
+              <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-ember text-[10px] text-white">
                 {wishlist.ids.length}
               </span>
             )}
@@ -80,7 +80,7 @@ export function Header() {
           <Link href="/cart" className="relative" aria-label="Cart">
             <ShoppingBag size={20} />
             {cart.count > 0 && (
-              <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-ink text-[10px] text-paper">
+              <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-bone text-[10px] text-void">
                 {cart.count}
               </span>
             )}
@@ -97,17 +97,17 @@ export function Header() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden border-t border-stone-200 bg-paper"
+            className="overflow-hidden border-t border-white/10 bg-void/95"
           >
             <Container className="py-4">
               <form onSubmit={submitSearch} className="flex items-center gap-3">
-                <Search size={18} className="text-stone-400" />
+                <Search size={18} className="text-chrome" />
                 <input
                   autoFocus
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search for products…"
-                  className="w-full bg-transparent text-lg outline-none placeholder:text-stone-400"
+                  className="w-full bg-transparent text-lg text-bone outline-none placeholder:text-chrome"
                 />
               </form>
             </Container>
@@ -122,11 +122,11 @@ export function Header() {
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-y-0 left-0 z-[60] w-80 bg-paper p-6 shadow-lift lg:hidden"
+            className="fixed inset-y-0 left-0 z-[60] w-80 border-r border-white/10 bg-graphite p-6 shadow-glass lg:hidden"
           >
             <div className="mb-8 flex items-center justify-between">
-              <span className="font-display text-lg font-semibold">URBANFITS</span>
-              <button onClick={() => setMenuOpen(false)} aria-label="Close menu">
+              <span className="font-display text-lg font-semibold text-bone">URBANFITS</span>
+              <button onClick={() => setMenuOpen(false)} aria-label="Close menu" className="text-bone">
                 <X size={20} />
               </button>
             </div>
@@ -136,7 +136,7 @@ export function Header() {
                   key={c.key}
                   href={`/shop/${c.key}`}
                   onClick={() => setMenuOpen(false)}
-                  className="text-lg font-medium"
+                  className="text-lg font-medium text-silver"
                 >
                   {c.label}
                 </Link>

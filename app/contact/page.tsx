@@ -18,7 +18,7 @@ export default function ContactPage() {
 
   return (
     <Container className="py-16">
-      <p className="text-xs font-semibold uppercase tracking-widest2 text-accent">Get in touch</p>
+      <p className="text-xs font-semibold uppercase tracking-widest2 text-chrome-bright">Get in touch</p>
       <h1 className="mt-3 font-display text-4xl font-medium tracking-tightest md:text-5xl">Contact Us</h1>
 
       <div className="mt-12 grid gap-12 md:grid-cols-2">
@@ -54,21 +54,21 @@ export default function ContactPage() {
             )}
           </AnimatePresence>
 
-          <div className="mt-10 space-y-4 text-sm text-stone-600">
+          <div className="mt-10 space-y-4 text-sm text-silver/80">
             <div className="flex items-center gap-3">
-              <Mail size={18} className="text-stone-400" />
-              <a href={`mailto:${CONTACT.email}`} className="hover:text-ink">{CONTACT.email}</a>
+              <Mail size={18} className="text-chrome" />
+              <a href={`mailto:${CONTACT.email}`} className="hover:text-bone">{CONTACT.email}</a>
             </div>
             <div className="flex items-center gap-3">
-              <Phone size={18} className="text-stone-400" />
-              <a href={`tel:${CONTACT.phone1.replace(/\s/g, "")}`} className="hover:text-ink">{CONTACT.phone1}</a>
+              <Phone size={18} className="text-chrome" />
+              <a href={`tel:${CONTACT.phone1.replace(/\s/g, "")}`} className="hover:text-bone">{CONTACT.phone1}</a>
             </div>
             <div className="flex items-center gap-3">
-              <Phone size={18} className="text-stone-400" />
-              <a href={`tel:${CONTACT.phone2.replace(/\s/g, "")}`} className="hover:text-ink">{CONTACT.phone2}</a>
+              <Phone size={18} className="text-chrome" />
+              <a href={`tel:${CONTACT.phone2.replace(/\s/g, "")}`} className="hover:text-bone">{CONTACT.phone2}</a>
             </div>
             <div className="flex items-center gap-3">
-              <MapPin size={18} className="text-stone-400" /> Bengaluru, Karnataka, India
+              <MapPin size={18} className="text-chrome" /> Bengaluru, Karnataka, India
             </div>
             <a
               href={whatsappLink()}
@@ -78,9 +78,9 @@ export default function ContactPage() {
             >
               Chat on WhatsApp
             </a>
-            <div className="flex gap-4 pt-2 text-stone-400">
-              <Instagram size={18} className="cursor-pointer hover:text-ink" />
-              <Twitter size={18} className="cursor-pointer hover:text-ink" />
+            <div className="flex gap-4 pt-2 text-chrome">
+              <Instagram size={18} className="cursor-pointer hover:text-bone" />
+              <Twitter size={18} className="cursor-pointer hover:text-bone" />
             </div>
           </div>
         </div>

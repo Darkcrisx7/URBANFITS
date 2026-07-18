@@ -45,10 +45,10 @@ export function QuickView({
             <Rating value={product.rating} count={product.reviewCount} />
           </div>
           <p className="mt-3 text-xl font-semibold">{formatCurrency(product.price)}</p>
-          <p className="mt-4 text-sm text-stone-500">{product.description}</p>
+          <p className="mt-4 text-sm text-silver/70">{product.description}</p>
 
           <div className="mt-6">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wideish text-stone-500">Color</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wideish text-silver/70">Color</p>
             <div className="flex gap-2">
               {product.colors.map((c) => (
                 <button
@@ -56,7 +56,7 @@ export function QuickView({
                   onClick={() => setColor(c.name)}
                   className={cn(
                     "h-8 w-8 rounded-full border-2 transition-transform hover:scale-110",
-                    color === c.name ? "border-ink" : "border-transparent"
+                    color === c.name ? "border-bone" : "border-transparent"
                   )}
                   style={{ backgroundColor: c.hex }}
                   aria-label={c.name}
@@ -66,7 +66,7 @@ export function QuickView({
           </div>
 
           <div className="mt-6">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wideish text-stone-500">Size</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wideish text-silver/70">Size</p>
             <div className="flex flex-wrap gap-2">
               {product.sizes.map((s) => (
                 <button
@@ -74,7 +74,7 @@ export function QuickView({
                   onClick={() => setSize(s)}
                   className={cn(
                     "rounded-lg border px-3.5 py-2 text-sm transition-colors",
-                    size === s ? "border-ink bg-ink text-paper" : "border-stone-300 hover:border-ink"
+                    size === s ? "border-bone bg-bone text-void" : "border-white/15 hover:border-bone"
                   )}
                 >
                   {s}

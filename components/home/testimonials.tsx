@@ -16,12 +16,12 @@ export function Testimonials() {
   }
 
   return (
-    <section className="relative overflow-hidden bg-ink py-24 text-paper md:py-32">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(59,130,246,0.15),transparent_50%)]" />
+    <section className="relative overflow-hidden bg-void py-24 text-bone md:py-32">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(139,147,166,0.15),transparent_50%)]" />
       <Container className="relative">
         <SectionHeading eyebrow="Word on the street" title="What people say" />
         <div className="mx-auto max-w-xl rounded-3xl border border-white/10 bg-white/5 p-10 text-center backdrop-blur-xl">
-          <Quote className="mx-auto mb-4 text-accent" />
+          <Quote className="mx-auto mb-4 text-chrome-bright" />
           <AnimatePresence mode="wait">
             <motion.div
               key={index}
@@ -34,7 +34,7 @@ export function Testimonials() {
               <div className="mt-4 flex justify-center">
                 <Rating value={t.rating} />
               </div>
-              <p className="mt-3 text-sm text-stone-400">{t.author}</p>
+              <p className="mt-3 text-sm text-chrome">{t.author}</p>
             </motion.div>
           </AnimatePresence>
           <div className="mt-8 flex justify-center gap-3">

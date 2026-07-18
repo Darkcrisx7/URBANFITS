@@ -50,7 +50,7 @@ export function ImageGallery({
               className={cn(
                 "relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br transition-all",
                 img.gradient,
-                active === i ? "ring-2 ring-ink ring-offset-2" : "opacity-60 hover:opacity-100"
+                active === i ? "ring-2 ring-bone ring-offset-2" : "opacity-60 hover:opacity-100"
               )}
               aria-label={`View ${img.label}`}
             >

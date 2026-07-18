@@ -88,13 +88,13 @@ export function ShopBrowser({
           value={query}
           onChange={(e) => updateSearch(e.target.value)}
           placeholder="Search products…"
-          className="h-11 w-full rounded-full border border-stone-300 px-5 text-sm outline-none focus:border-ink md:max-w-xs"
+          className="h-11 w-full rounded-full border border-white/15 px-5 text-sm outline-none focus:border-bone md:max-w-xs"
         />
         <div className="flex items-center gap-3">
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as SortKey)}
-            className="h-11 rounded-full border border-stone-300 bg-paper px-4 text-sm outline-none focus:border-ink"
+            className="h-11 rounded-full border border-white/15 bg-graphite px-4 text-sm outline-none focus:border-bone"
           >
             <option value="featured">Featured</option>
             <option value="newest">Newest</option>
@@ -122,7 +122,7 @@ export function ShopBrowser({
         {filtersOpen && (
           <div className="fixed inset-0 z-[90] bg-black/50 md:hidden" onClick={() => setFiltersOpen(false)}>
             <div
-              className="absolute inset-y-0 left-0 w-80 overflow-y-auto bg-paper p-6"
+              className="absolute inset-y-0 left-0 w-80 overflow-y-auto bg-graphite p-6"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="mb-6 flex items-center justify-between">
@@ -143,7 +143,7 @@ export function ShopBrowser({
         )}
 
         <div>
-          <p className="mb-4 text-sm text-stone-500">{filtered.length} products</p>
+          <p className="mb-4 text-sm text-silver/70">{filtered.length} products</p>
           <ProductGrid products={filtered} />
         </div>
       </div>
@@ -168,11 +168,11 @@ function FilterPanel({
     <div className="space-y-8">
       {!lockedCategory && (
         <div>
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wideish text-stone-500">Category</p>
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wideish text-silver/70">Category</p>
           <div className="flex flex-col gap-2">
             <button
               onClick={() => setCategory("all")}
-              className={cn("text-left text-sm", category === "all" ? "font-semibold text-ink" : "text-stone-500")}
+              className={cn("text-left text-sm", category === "all" ? "font-semibold text-bone" : "text-silver/70")}
             >
               All
             </button>
@@ -182,7 +182,7 @@ function FilterPanel({
                 onClick={() => setCategory(c.key)}
                 className={cn(
                   "text-left text-sm",
-                  category === c.key ? "font-semibold text-ink" : "text-stone-500"
+                  category === c.key ? "font-semibold text-bone" : "text-silver/70"
                 )}
               >
                 {c.label}
@@ -192,7 +192,7 @@ function FilterPanel({
         </div>
       )}
       <div>
-        <p className="mb-3 text-xs font-semibold uppercase tracking-wideish text-stone-500">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wideish text-silver/70">
           Max Price: ₹{maxPrice}
         </p>
         <input
@@ -202,7 +202,7 @@ function FilterPanel({
           step={100}
           value={maxPrice}
           onChange={(e) => setMaxPrice(Number(e.target.value))}
-          className="w-full accent-ink"
+          className="w-full accent-bone"
         />
       </div>
     </div>

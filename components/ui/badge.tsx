@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
 
 const tones = {
-  ink: "bg-ink text-paper",
-  accent: "bg-accent text-white",
+  ink: "bg-[color:var(--c-ink)] text-[color:var(--c-inverse)]",
+  accent: "bg-[color:var(--c-accent)] text-[color:var(--c-accent-ink)]",
   success: "bg-success/10 text-success",
   error: "bg-error/10 text-error",
-  neutral: "bg-stone-100 text-stone-600",
-  outline: "border border-ink text-ink",
+  neutral: "bg-[color:var(--c-hover-surface)] text-[color:var(--c-label)]",
+  outline: "border border-[color:var(--c-ink)] text-[color:var(--c-ink)]",
 };
 
 export function Badge({

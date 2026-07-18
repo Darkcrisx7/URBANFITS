@@ -23,9 +23,9 @@ export default function WishlistPage() {
     <Container className="py-12">
       <SectionHeading eyebrow="Saved for later" title="Your Wishlist" />
       {items.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-stone-300 py-24 text-center">
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 py-24 text-center">
           <p className="font-display text-xl">Nothing saved yet</p>
-          <p className="mt-2 text-sm text-stone-500">Tap the heart on any product to save it here.</p>
+          <p className="mt-2 text-sm text-silver/70">Tap the heart on any product to save it here.</p>
           <Link href="/shop">
             <Button className="mt-6">Browse the Shop</Button>
           </Link>

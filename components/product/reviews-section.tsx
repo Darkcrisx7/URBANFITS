@@ -44,29 +44,29 @@ export function ReviewsSection({ productId }: { productId: string }) {
       <div>
         <h3 className="font-display text-2xl font-medium tracking-tightest">Reviews</h3>
         {reviews.length === 0 ? (
-          <p className="mt-4 text-sm text-stone-500">No reviews yet — be the first.</p>
+          <p className="mt-4 text-sm text-silver/70">No reviews yet — be the first.</p>
         ) : (
           <div className="mt-5 space-y-6">
             {reviews.map((r) => (
-              <div key={r.id} className="border-b border-stone-200 pb-5">
+              <div key={r.id} className="border-b border-white/10 pb-5">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium">{r.author}</p>
-                  <span className="text-xs text-stone-400">{r.date}</span>
+                  <span className="text-xs text-chrome">{r.date}</span>
                 </div>
                 <Rating value={r.rating} />
-                <p className="mt-2 text-sm text-stone-600">{r.comment}</p>
+                <p className="mt-2 text-sm text-silver/80">{r.comment}</p>
               </div>
             ))}
           </div>
         )}
       </div>
 
-      <form onSubmit={submit} className="rounded-2xl bg-stone-50 p-6">
+      <form onSubmit={submit} className="rounded-2xl bg-white/5 p-6">
         <h4 className="font-display text-lg font-medium">Write a review</h4>
         <div className="mt-4 flex gap-1">
           {Array.from({ length: 5 }).map((_, i) => (
             <button type="button" key={i} onClick={() => setRating(i + 1)}>
-              <span className={i < rating ? "text-ink" : "text-stone-300"}>★</span>
+              <span className={i < rating ? "text-bone" : "text-chrome/50"}>★</span>
             </button>
           ))}
         </div>

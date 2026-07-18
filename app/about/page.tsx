@@ -5,11 +5,11 @@ export const metadata = { title: "About" };
 export default function AboutPage() {
   return (
     <Container className="max-w-3xl py-16">
-      <p className="text-xs font-semibold uppercase tracking-widest2 text-accent">Our Story</p>
+      <p className="text-xs font-semibold uppercase tracking-widest2 text-chrome-bright">Our Story</p>
       <h1 className="mt-3 font-display text-4xl font-medium tracking-tightest md:text-5xl">
         Built for people who move.
       </h1>
-      <div className="mt-8 space-y-5 text-stone-600">
+      <div className="mt-8 space-y-5 text-silver/80">
         <p>
           UrbanFits.Store started as a small drop of oversized tees between friends who were tired of
           streetwear that looked heavy but felt cheap. Every piece we make now goes through the same

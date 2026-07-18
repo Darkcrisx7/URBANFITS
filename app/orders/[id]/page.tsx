@@ -23,7 +23,7 @@ export default function TrackOrderPage({ params }: { params: Promise<{ id: strin
   if (order === null) {
     return (
       <Container className="py-32 text-center">
-        <p className="text-stone-500">We couldn't find that order.</p>
+        <p className="text-silver/70">We couldn't find that order.</p>
         <Link href="/orders">
           <Button className="mt-6">Back to Orders</Button>
         </Link>
@@ -38,7 +38,7 @@ export default function TrackOrderPage({ params }: { params: Promise<{ id: strin
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="font-display text-3xl font-medium tracking-tightest">{order.id}</h1>
-          <p className="mt-1 text-sm text-stone-500">
+          <p className="mt-1 text-sm text-silver/70">
             Placed on {new Date(order.createdAt).toLocaleDateString()}
           </p>
         </div>
@@ -64,10 +64,10 @@ export default function TrackOrderPage({ params }: { params: Promise<{ id: strin
                 >
                   {i < currentIndex ? <Check size={14} /> : i + 1}
                 </motion.div>
-                <span className="mt-2 text-[11px] capitalize text-stone-500">{step}</span>
+                <span className="mt-2 text-[11px] capitalize text-silver/70">{step}</span>
               </div>
               {i < ORDER_STEPS.length - 1 && (
-                <div className={cn("mx-2 h-0.5 flex-1", i < currentIndex ? "bg-ink" : "bg-stone-200")} />
+                <div className={cn("mx-2 h-0.5 flex-1", i < currentIndex ? "bg-bone" : "bg-white/10")} />
               )}
             </div>
           ))}
@@ -75,14 +75,14 @@ export default function TrackOrderPage({ params }: { params: Promise<{ id: strin
       )}
 
       <div className="grid gap-8 md:grid-cols-2">
-        <div className="rounded-2xl border border-stone-200 p-6">
+        <div className="rounded-2xl border border-white/10 p-6">
           <h2 className="mb-4 font-display text-lg font-medium">Items</h2>
           <div className="space-y-3">
             {order.items.map((item, i) => (
               <div key={i} className="flex justify-between text-sm">
                 <span>
                   {item.name} × {item.quantity}
-                  <span className="block text-xs text-stone-400">
+                  <span className="block text-xs text-chrome">
                     {item.color} · {item.size}
                   </span>
                 </span>
@@ -90,14 +90,14 @@ export default function TrackOrderPage({ params }: { params: Promise<{ id: strin
               </div>
             ))}
           </div>
-          <div className="mt-4 flex justify-between border-t border-stone-200 pt-4 text-sm font-semibold">
+          <div className="mt-4 flex justify-between border-t border-white/10 pt-4 text-sm font-semibold">
             <span>Total</span>
             <span>{formatCurrency(order.total)}</span>
           </div>
         </div>
-        <div className="rounded-2xl border border-stone-200 p-6">
+        <div className="rounded-2xl border border-white/10 p-6">
           <h2 className="mb-4 font-display text-lg font-medium">Delivery Address</h2>
-          <p className="text-sm text-stone-600">
+          <p className="text-sm text-silver/80">
             {order.address.fullName}
             <br />
             {order.address.line1}
@@ -107,7 +107,7 @@ export default function TrackOrderPage({ params }: { params: Promise<{ id: strin
             <br />
             {order.address.phone}
           </p>
-          <p className="mt-4 text-xs text-stone-400">Payment: Cash on Delivery ({order.paymentStatus})</p>
+          <p className="mt-4 text-xs text-chrome">Payment: Cash on Delivery ({order.paymentStatus})</p>
         </div>
       </div>
     </Container>

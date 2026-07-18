@@ -15,17 +15,17 @@ export function PromoBanner({ banner }: { banner: Banner }) {
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.7 }}
-        className={`relative overflow-hidden rounded-3xl bg-gradient-to-br ${banner.gradient} px-8 py-20 text-paper md:px-16 md:py-28`}
+        className={`relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br ${banner.gradient} px-8 py-20 text-bone md:px-16 md:py-28`}
       >
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(59,130,246,0.25),transparent_50%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(139,147,166,0.2),transparent_50%)]" />
         <div className="relative max-w-xl">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-widest2 text-accent">Limited Drop</p>
+          <p className="mb-4 font-mono text-xs font-medium uppercase tracking-widest3 text-chrome-bright">Limited Drop</p>
           <h2 className="font-display text-4xl font-medium tracking-tightest md:text-6xl">
             {banner.title}
           </h2>
-          <p className="mt-4 text-stone-300">{banner.subtitle}</p>
+          <p className="mt-4 text-silver/70">{banner.subtitle}</p>
           <Link href={banner.ctaHref}>
-            <Button size="lg" variant="accent" className="mt-8">
+            <Button size="lg" variant="primary" className="mt-8">
               {banner.ctaLabel} <ArrowRight size={16} />
             </Button>
           </Link>

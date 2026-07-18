@@ -37,7 +37,7 @@ export default function LoginPage() {
     <Container className="flex justify-center py-20">
       <div className="w-full max-w-md">
         <h1 className="font-display text-3xl font-medium tracking-tightest">Log In</h1>
-        <p className="mt-2 text-sm text-stone-500">Log in to track orders and save your details.</p>
+        <p className="mt-2 text-sm text-silver/70">Log in to track orders and save your details.</p>
         <form onSubmit={onSubmit} className="mt-8 space-y-4">
           <div>
             <Label>Email</Label>
@@ -53,7 +53,7 @@ export default function LoginPage() {
             />
           </div>
           <div className="text-right">
-            <Link href="/forgot-password" className="text-xs text-accent">
+            <Link href="/forgot-password" className="text-xs text-chrome-bright">
               Forgot password?
             </Link>
           </div>
@@ -62,9 +62,9 @@ export default function LoginPage() {
             {loading ? "Logging in…" : "Log In"}
           </Button>
         </form>
-        <p className="mt-6 text-center text-sm text-stone-500">
+        <p className="mt-6 text-center text-sm text-silver/70">
           New here?{" "}
-          <Link href="/signup" className="text-accent">
+          <Link href="/signup" className="text-chrome-bright">
             Create an account
           </Link>
         </p>

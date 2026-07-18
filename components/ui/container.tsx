@@ -17,9 +17,9 @@ export function SectionHeading({
     <div className="mb-10 flex items-end justify-between gap-6">
       <div>
         {eyebrow && (
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest2 text-accent">{eyebrow}</p>
+          <p className="mb-2 font-mono text-xs font-medium uppercase tracking-widest3 text-chrome">{eyebrow}</p>
         )}
-        <h2 className="font-display text-3xl font-medium tracking-tightest text-ink md:text-4xl">
+        <h2 className="font-display text-3xl font-medium tracking-tightest text-bone md:text-4xl">
           {title}
         </h2>
       </div>

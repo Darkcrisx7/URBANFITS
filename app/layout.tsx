@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Geist } from "next/font/google";
+import { Inter, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { Header } from "@/components/layout/header";
@@ -9,6 +9,7 @@ import { WhatsAppButton } from "@/components/layout/whatsapp-button";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-display" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-body" });
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://urbanfits.store"),
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${geist.variable} ${inter.variable}`}>
+    <html lang="en" className={`${geist.variable} ${inter.variable} ${geistMono.variable}`}>
       <body className="font-body antialiased">
         <Providers>
           <Header />

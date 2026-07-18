@@ -44,12 +44,12 @@ export function Dialog({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 24, scale: 0.98 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className={`relative z-10 max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl bg-paper p-6 shadow-lift md:p-8 ${className ?? ""}`}
+            className={`relative z-10 max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl border border-white/10 bg-graphite p-6 text-bone shadow-glass md:p-8 ${className ?? ""}`}
           >
             <button
               onClick={onClose}
               aria-label="Close"
-              className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full bg-stone-100 transition-colors hover:bg-stone-200"
+              className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-bone transition-colors hover:bg-white/20"
             >
               <X size={16} />
             </button>

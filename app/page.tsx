@@ -6,6 +6,7 @@ import { Testimonials } from "@/components/home/testimonials";
 import { NewsletterForm } from "@/components/home/newsletter-form";
 import { ProductGrid } from "@/components/product/product-grid";
 import { Container, SectionHeading } from "@/components/ui/container";
+import { Reveal } from "@/components/motion/reveal";
 import { getProducts, getBanners } from "@/lib/storage";
 
 // Re-fetch from Supabase on every request so admin edits show up
@@ -25,42 +26,60 @@ export default async function HomePage() {
 
       <section className="py-20 md:py-28">
         <Container>
-          <SectionHeading eyebrow="This season" title="Featured Collection" />
-          <ProductGrid products={featured} />
+          <Reveal>
+            <SectionHeading eyebrow="This season" title="Featured Collection" />
+          </Reveal>
+          <Reveal delay={0.1}>
+            <ProductGrid products={featured} />
+          </Reveal>
         </Container>
       </section>
 
-      <Trending products={trending} />
+      <Reveal>
+        <Trending products={trending} />
+      </Reveal>
 
-      <Categories />
+      <Reveal>
+        <Categories />
+      </Reveal>
 
       {banners.filter((b) => b.active).map((b) => (
-        <PromoBanner key={b.id} banner={b} />
+        <Reveal key={b.id}>
+          <PromoBanner banner={b} />
+        </Reveal>
       ))}
 
       <section className="py-20 md:py-28">
         <Container>
-          <SectionHeading eyebrow="Fan favorites" title="Best Sellers" />
-          <ProductGrid products={bestSellers} />
+          <Reveal>
+            <SectionHeading eyebrow="Fan favorites" title="Best Sellers" />
+          </Reveal>
+          <Reveal delay={0.1}>
+            <ProductGrid products={bestSellers} />
+          </Reveal>
         </Container>
       </section>
 
-      <Testimonials />
+      <Reveal>
+        <Testimonials />
+      </Reveal>
 
       <section className="py-20 md:py-28">
         <Container className="flex flex-col items-center text-center">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest2 text-accent">
-            Stay in the loop
-          </p>
-          <h2 className="font-display text-3xl font-medium tracking-tightest md:text-4xl">
-            Get first access to new drops
-          </h2>
-          <p className="mt-3 max-w-md text-stone-500">
-            10% off your first order when you sign up. No spam, just drops and restocks.
-          </p>
-          <div className="mt-6">
-            <NewsletterForm />
-          </div>
+          <Reveal className="flex flex-col items-center">
+            <p className="mb-2 font-mono text-xs font-medium uppercase tracking-widest3 text-chrome">
+              Stay in the loop
+            </p>
+            <h2 className="font-display text-3xl font-medium tracking-tightest text-bone md:text-4xl">
+              Get first access to new drops
+            </h2>
+            <p className="mt-3 max-w-md text-silver/60">
+              10% off your first order when you sign up. No spam, just drops and restocks.
+            </p>
+            <div className="mt-6">
+              <NewsletterForm />
+            </div>
+          </Reveal>
         </Container>
       </section>
     </>

@@ -5,6 +5,34 @@
 :root {
   --font-display: "Geist", "Inter", sans-serif;
   --font-body: "Inter", sans-serif;
+
+  /* Semantic tokens — defaults match the existing light admin look exactly.
+     Button/Input/Label read these, so the admin panel is untouched. */
+  --c-surface: #ffffff;
+  --c-ink: #0a0a0a;
+  --c-inverse: #ffffff;
+  --c-border: #cbcbcb;
+  --c-muted: #9b9b9b;
+  --c-label: #6e6e6e;
+  --c-hover-surface: #f2f2f2;
+  --c-hover-ink: #1a1a1a;
+  --c-accent: #3b82f6;
+  --c-accent-ink: #ffffff;
+}
+
+/* Applied to the storefront (non-admin) subtree only — see MainWrapper. */
+.storefront-theme {
+  --c-surface: #17181c;
+  --c-ink: #ededea;
+  --c-inverse: #0b0b0d;
+  --c-border: rgba(199, 201, 204, 0.16);
+  --c-muted: #8b93a6;
+  --c-label: #8b93a6;
+  --c-hover-surface: rgba(199, 201, 204, 0.08);
+  --c-hover-ink: #c7c9cc;
+  --c-accent: #8b93a6;
+  --c-accent-ink: #0b0b0d;
+  color-scheme: dark;
 }
 
 * {

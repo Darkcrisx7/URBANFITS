@@ -45,7 +45,7 @@ export default function CartPage() {
     return (
       <Container className="flex flex-col items-center justify-center py-32 text-center">
         <h1 className="font-display text-3xl font-medium tracking-tightest">Your bag is empty</h1>
-        <p className="mt-3 text-stone-500">Add something you'll actually wear.</p>
+        <p className="mt-3 text-silver/70">Add something you'll actually wear.</p>
         <Link href="/shop">
           <Button size="lg" className="mt-8">
             Continue Shopping
@@ -71,29 +71,29 @@ export default function CartPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0, x: -20 }}
-                  className="flex gap-4 rounded-2xl border border-stone-200 p-4"
+                  className="flex gap-4 rounded-2xl border border-white/10 p-4"
                 >
                   <div className={cn("h-28 w-24 shrink-0 rounded-xl bg-gradient-to-br", product.images[0].gradient)} />
                   <div className="flex flex-1 flex-col justify-between">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <Link href={`/product/${product.slug}`} className="text-sm font-medium hover:text-accent">
+                        <Link href={`/product/${product.slug}`} className="text-sm font-medium hover:text-chrome-bright">
                           {product.name}
                         </Link>
-                        <p className="mt-1 text-xs text-stone-500">
+                        <p className="mt-1 text-xs text-silver/70">
                           {line.color} · Size {line.size}
                         </p>
                       </div>
                       <button
                         onClick={() => cart.remove(line.productId, line.size, line.color)}
                         aria-label="Remove item"
-                        className="text-stone-400 hover:text-error"
+                        className="text-chrome hover:text-error"
                       >
                         <X size={16} />
                       </button>
                     </div>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center rounded-full border border-stone-300">
+                      <div className="flex items-center rounded-full border border-white/15">
                         <button
                           onClick={() =>
                             cart.updateQuantity(line.productId, line.size, line.color, line.quantity - 1)
@@ -123,7 +123,7 @@ export default function CartPage() {
           </AnimatePresence>
         </div>
 
-        <div className="h-fit rounded-2xl border border-stone-200 p-6">
+        <div className="h-fit rounded-2xl border border-white/10 p-6">
           <h2 className="font-display text-xl font-medium">Order Summary</h2>
 
           <div className="mt-5 flex gap-2">
@@ -131,7 +131,7 @@ export default function CartPage() {
               value={couponInput}
               onChange={(e) => setCouponInput(e.target.value)}
               placeholder="Coupon code"
-              className="h-11 flex-1 rounded-full border border-stone-300 px-4 text-sm outline-none focus:border-ink"
+              className="h-11 flex-1 rounded-full border border-white/15 px-4 text-sm outline-none focus:border-bone"
             />
             <Button variant="secondary" onClick={applyCoupon}>
               <Tag size={14} /> Apply
@@ -143,16 +143,16 @@ export default function CartPage() {
             </p>
           )}
 
-          <div className="mt-6 space-y-3 border-t border-stone-200 pt-5 text-sm">
-            <div className="flex justify-between text-stone-500">
+          <div className="mt-6 space-y-3 border-t border-white/10 pt-5 text-sm">
+            <div className="flex justify-between text-silver/70">
               <span>Subtotal</span>
               <span>{formatCurrency(cart.subtotal)}</span>
             </div>
-            <div className="flex justify-between text-stone-500">
+            <div className="flex justify-between text-silver/70">
               <span>Shipping</span>
               <span>{shipping === 0 ? "Free" : formatCurrency(shipping)}</span>
             </div>
-            <div className="flex justify-between text-stone-500">
+            <div className="flex justify-between text-silver/70">
               <span>Tax (5%)</span>
               <span>{formatCurrency(tax)}</span>
             </div>
@@ -162,7 +162,7 @@ export default function CartPage() {
                 <span>-{formatCurrency(discount)}</span>
               </div>
             )}
-            <div className="flex justify-between border-t border-stone-200 pt-3 text-base font-semibold">
+            <div className="flex justify-between border-t border-white/10 pt-3 text-base font-semibold">
               <span>Total</span>
               <span>{formatCurrency(total)}</span>
             </div>

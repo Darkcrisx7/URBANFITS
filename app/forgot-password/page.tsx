@@ -34,7 +34,7 @@ export default function ForgotPasswordPage() {
     <Container className="flex justify-center py-20">
       <div className="w-full max-w-md">
         <h1 className="font-display text-3xl font-medium tracking-tightest">Reset Password</h1>
-        <p className="mt-2 text-sm text-stone-500">Enter your email and we'll send a reset link.</p>
+        <p className="mt-2 text-sm text-silver/70">Enter your email and we'll send a reset link.</p>
         <AnimatePresence mode="wait">
           {sent ? (
             <motion.div
@@ -59,8 +59,8 @@ export default function ForgotPasswordPage() {
             </motion.form>
           )}
         </AnimatePresence>
-        <p className="mt-6 text-center text-sm text-stone-500">
-          <Link href="/login" className="text-accent">
+        <p className="mt-6 text-center text-sm text-silver/70">
+          <Link href="/login" className="text-chrome-bright">
             Back to login
           </Link>
         </p>

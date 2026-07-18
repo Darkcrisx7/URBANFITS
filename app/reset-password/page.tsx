@@ -55,7 +55,7 @@ export default function ResetPasswordPage() {
   if (!ready) {
     return (
       <Container className="flex justify-center py-32 text-center">
-        <p className="text-stone-500">
+        <p className="text-silver/70">
           This link may have expired. Request a new one from the login page.
         </p>
       </Container>

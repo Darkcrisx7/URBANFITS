@@ -1,102 +1,123 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Heart, Eye } from "lucide-react";
+import { useRef, useState } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { Heart } from "lucide-react";
 import { Product } from "@/lib/types";
+import { formatCurrency, cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Rating } from "@/components/ui/rating";
-import { formatCurrency, computeDiscountPercent, cn } from "@/lib/utils";
 import { useWishlist } from "@/contexts/wishlist-context";
 import { useToast } from "@/contexts/toast-context";
-import { QuickView } from "./quick-view";
 
 export function ProductCard({ product }: { product: Product }) {
   const wishlist = useWishlist();
   const toast = useToast();
-  const [quickViewOpen, setQuickViewOpen] = useState(false);
-  const discount = computeDiscountPercent(product.price, product.compareAtPrice);
-  const totalStock = product.variants.reduce((s, v) => s + v.stock, 0);
-  const wished = wishlist.has(product.id);
+  const isWishlisted = wishlist.ids.includes(product.id);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Cheap CSS-transform tilt — no WebGL needed for cards, keeps grids of
+  // 20+ products smooth even on mid-range phones.
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const rotateX = useSpring(useTransform(my, [-0.5, 0.5], [7, -7]), { stiffness: 200, damping: 20 });
+  const rotateY = useSpring(useTransform(mx, [-0.5, 0.5], [-7, 7]), { stiffness: 200, damping: 20 });
+  const glareX = useTransform(mx, [-0.5, 0.5], [0, 100]);
+  const glareY = useTransform(my, [-0.5, 0.5], [0, 100]);
+  const [hovering, setHovering] = useState(false);
+
+  function onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect) return;
+    mx.set((e.clientX - rect.left) / rect.width - 0.5);
+    my.set((e.clientY - rect.top) / rect.height - 0.5);
+  }
+
+  function resetTilt() {
+    mx.set(0);
+    my.set(0);
+    setHovering(false);
+  }
 
   return (
-    <>
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="group relative"
-      >
-        <Link href={`/product/${product.slug}`} className="block">
-          <div
-            className={cn(
-              "relative aspect-[4/5] overflow-hidden rounded-2xl bg-gradient-to-br transition-transform duration-700 ease-out group-hover:scale-[1.03]",
-              product.images[0].gradient
-            )}
-          >
-            {product.images[0].url && (
+    <div
+      ref={ref}
+      onMouseMove={onMouseMove}
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={resetTilt}
+      className="group [perspective:1000px]"
+    >
+      <Link href={`/product/${product.slug}`}>
+        <motion.div
+          style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+          className="relative overflow-hidden rounded-2xl border border-white/10 bg-graphite shadow-glass transition-shadow duration-500 group-hover:shadow-chrome"
+        >
+          <div className="relative aspect-[4/5] overflow-hidden">
+            {product.images[0].url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={product.images[0].url}
                 alt={product.name}
-                className="absolute inset-0 h-full w-full object-cover"
+                className="absolute inset-0 h-full w-full scale-105 object-cover transition-transform duration-700 ease-out group-hover:scale-[1.12]"
+              />
+            ) : (
+              <div
+                className={cn(
+                  "absolute inset-0 scale-105 bg-gradient-to-br transition-transform duration-700 ease-out group-hover:scale-[1.12]",
+                  product.images[0].gradient
+                )}
               />
             )}
-            <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/40 to-transparent p-4">
-              <span className="font-display text-sm text-white/80">{product.name}</span>
+
+            {/* Reflection sheen that tracks the cursor — the "dynamic reflections" ask */}
+            <motion.div
+              className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+              style={{
+                background: hovering
+                  ? `radial-gradient(circle at ${glareX.get()}% ${glareY.get()}%, rgba(255,255,255,0.22), transparent 45%)`
+                  : undefined,
+              }}
+            />
+
+            <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/50 to-transparent p-4">
+              <span className="font-display text-sm text-bone/90">{product.name}</span>
             </div>
+
             <div className="absolute left-3 top-3 flex flex-col gap-1.5">
               {product.isNew && <Badge tone="accent">New</Badge>}
-              {product.isFlashSale && <Badge tone="error">Flash Sale</Badge>}
-              {discount > 0 && <Badge tone="ink">-{discount}%</Badge>}
-              {totalStock === 0 && <Badge tone="neutral">Out of Stock</Badge>}
+              {product.isFlashSale && <Badge tone="error">Sale</Badge>}
             </div>
 
-            <div className="absolute right-3 top-3 flex flex-col gap-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  wishlist.toggle(product.id);
-                  toast.show(wished ? "Removed from wishlist" : "Added to wishlist");
-                }}
-                aria-label="Toggle wishlist"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/90 backdrop-blur transition-transform hover:scale-110"
-              >
-                <Heart size={16} className={wished ? "fill-error text-error" : "text-ink"} />
-              </button>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  setQuickViewOpen(true);
-                }}
-                aria-label="Quick view"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/90 backdrop-blur transition-transform hover:scale-110"
-              >
-                <Eye size={16} className="text-ink" />
-              </button>
-            </div>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                wishlist.toggle(product.id);
+                toast.show(isWishlisted ? "Removed from wishlist" : "Added to wishlist");
+              }}
+              className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-void/50 text-bone backdrop-blur-md transition-transform hover:scale-110"
+              aria-label="Toggle wishlist"
+            >
+              <Heart size={16} className={isWishlisted ? "fill-ember text-ember" : ""} />
+            </button>
           </div>
 
-          <div className="mt-3 flex items-start justify-between gap-2">
-            <div>
-              <h3 className="text-sm font-medium text-ink">{product.name}</h3>
-              <Rating value={product.rating} count={product.reviewCount} />
-            </div>
-            <div className="text-right">
-              <p className="text-sm font-semibold text-ink">{formatCurrency(product.price)}</p>
-              {product.compareAtPrice && (
-                <p className="text-xs text-stone-400 line-through">
-                  {formatCurrency(product.compareAtPrice)}
-                </p>
-              )}
+          <div className="p-4" style={{ transform: "translateZ(20px)" }}>
+            <p className="truncate text-sm font-medium text-bone">{product.name}</p>
+            <div className="mt-1 flex items-center justify-between">
+              <div className="flex items-baseline gap-2 font-mono">
+                <span className="text-sm font-semibold text-bone">{formatCurrency(product.price)}</span>
+                {product.compareAtPrice && (
+                  <span className="text-xs text-chrome line-through">
+                    {formatCurrency(product.compareAtPrice)}
+                  </span>
+                )}
+              </div>
+              <Rating value={product.rating} size={11} />
             </div>
           </div>
-        </Link>
-      </motion.div>
-
-      <QuickView product={product} open={quickViewOpen} onClose={() => setQuickViewOpen(false)} />
-    </>
+        </motion.div>
+      </Link>
+    </div>
   );
 }

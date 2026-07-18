@@ -26,11 +26,11 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
   return (
     <>
       <Container className="pt-10">
-        <p className="text-xs font-semibold uppercase tracking-widest2 text-accent">Category</p>
+        <p className="text-xs font-semibold uppercase tracking-widest2 text-chrome-bright">Category</p>
         <h1 className="mt-2 font-display text-4xl font-medium tracking-tightest md:text-5xl">
           {cat.label}
         </h1>
-        <p className="mt-2 text-stone-500">{cat.blurb}</p>
+        <p className="mt-2 text-silver/70">{cat.blurb}</p>
       </Container>
       <Suspense>
         <ShopBrowser products={products} lockedCategory={cat.key as Category} />

@@ -146,7 +146,7 @@ function CheckoutInner() {
   if (cart.lines.length === 0) {
     return (
       <Container className="py-32 text-center">
-        <p className="text-stone-500">Your bag is empty. Add items before checking out.</p>
+        <p className="text-silver/70">Your bag is empty. Add items before checking out.</p>
         <Button className="mt-6" onClick={() => router.push("/shop")}>
           Go to Shop
         </Button>
@@ -156,11 +156,11 @@ function CheckoutInner() {
 
   return (
     <Container className="py-12">
-      <div className="mb-10 flex items-center gap-3 text-xs font-semibold uppercase tracking-wideish text-stone-400">
-        <span className="text-ink">1. Bag</span>
-        <div className="h-px w-8 bg-stone-300" />
-        <span className="text-ink">2. Delivery</span>
-        <div className="h-px w-8 bg-stone-300" />
+      <div className="mb-10 flex items-center gap-3 text-xs font-semibold uppercase tracking-wideish text-chrome">
+        <span className="text-bone">1. Bag</span>
+        <div className="h-px w-8 bg-white/15" />
+        <span className="text-bone">2. Delivery</span>
+        <div className="h-px w-8 bg-white/15" />
         <span>3. Confirmation</span>
       </div>
 
@@ -221,13 +221,13 @@ function CheckoutInner() {
             <Textarea {...register("notes")} rows={3} placeholder="Leave at the front desk, call before delivery…" />
           </div>
 
-          <div className="rounded-2xl border border-stone-200 p-5">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wideish text-stone-500">Payment Method</p>
-            <div className="flex items-center gap-3 rounded-xl border-2 border-ink bg-stone-50 p-4">
+          <div className="rounded-2xl border border-white/10 p-5">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wideish text-silver/70">Payment Method</p>
+            <div className="flex items-center gap-3 rounded-xl border-2 border-bone bg-white/5 p-4">
               <Truck size={20} />
               <div>
                 <p className="text-sm font-medium">Cash on Delivery</p>
-                <p className="text-xs text-stone-500">Pay in cash when your order arrives.</p>
+                <p className="text-xs text-silver/70">Pay in cash when your order arrives.</p>
               </div>
               <CheckCircle2 size={18} className="ml-auto text-success" />
             </div>
@@ -238,7 +238,7 @@ function CheckoutInner() {
           </Button>
         </form>
 
-        <motion.div layout className="h-fit rounded-2xl border border-stone-200 p-6">
+        <motion.div layout className="h-fit rounded-2xl border border-white/10 p-6">
           <h2 className="font-display text-xl font-medium">Order Summary</h2>
           <div className="mt-5 space-y-4">
             {cart.lines.map((line) => {
@@ -246,9 +246,9 @@ function CheckoutInner() {
               if (!product) return null;
               return (
                 <div key={`${line.productId}-${line.size}-${line.color}`} className="flex justify-between text-sm">
-                  <span className="text-stone-600">
+                  <span className="text-silver/80">
                     {product.name} × {line.quantity}
-                    <span className="block text-xs text-stone-400">
+                    <span className="block text-xs text-chrome">
                       {line.color} · {line.size}
                     </span>
                   </span>
@@ -257,16 +257,16 @@ function CheckoutInner() {
               );
             })}
           </div>
-          <div className="mt-6 space-y-2 border-t border-stone-200 pt-5 text-sm">
-            <div className="flex justify-between text-stone-500">
+          <div className="mt-6 space-y-2 border-t border-white/10 pt-5 text-sm">
+            <div className="flex justify-between text-silver/70">
               <span>Subtotal</span>
               <span>{formatCurrency(cart.subtotal)}</span>
             </div>
-            <div className="flex justify-between text-stone-500">
+            <div className="flex justify-between text-silver/70">
               <span>Shipping</span>
               <span>{shipping === 0 ? "Free" : formatCurrency(shipping)}</span>
             </div>
-            <div className="flex justify-between text-stone-500">
+            <div className="flex justify-between text-silver/70">
               <span>Tax</span>
               <span>{formatCurrency(tax)}</span>
             </div>
@@ -276,7 +276,7 @@ function CheckoutInner() {
                 <span>-{formatCurrency(discount)}</span>
               </div>
             )}
-            <div className="flex justify-between border-t border-stone-200 pt-3 text-base font-semibold">
+            <div className="flex justify-between border-t border-white/10 pt-3 text-base font-semibold">
               <span>Total</span>
               <span>{formatCurrency(total)}</span>
             </div>

@@ -8,7 +8,7 @@ import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
 import { Product } from "@/lib/types";
-import { Hero3DLazy } from "@/components/three/hero-3d-lazy";
+import { HeroScene } from "@/components/home/hero-scene";
 
 export function Hero({ featuredA, featuredB }: { featuredA?: Product; featuredB?: Product }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -25,8 +25,8 @@ export function Hero({ featuredA, featuredB }: { featuredA?: Product; featuredB?
 
   return (
     <div ref={ref} className="relative -mt-20 h-[100svh] min-h-[640px] w-full overflow-hidden bg-void">
-      {/* Signature 3D scene — floating glass/chrome polyhedra, mouse-reactive */}
-      <Hero3DLazy />
+      {/* Signature scene — layered parallax glow + chrome grid, mouse-reactive */}
+      <HeroScene />
 
       {/* Cinematic vignette + grain-like gradient for depth */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(11,11,13,0.75)_100%)]" />

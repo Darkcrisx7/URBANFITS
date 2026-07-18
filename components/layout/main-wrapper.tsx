@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { AuthGate } from "@/components/layout/auth-gate";
 
 export function MainWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -13,7 +14,7 @@ export function MainWrapper({ children }: { children: React.ReactNode }) {
         !isAdmin && "storefront-theme bg-void pt-20 text-bone"
       )}
     >
-      {children}
+      {isAdmin ? children : <AuthGate>{children}</AuthGate>}
     </main>
   );
 }

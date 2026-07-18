@@ -1,22 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
 import { useToast } from "@/contexts/toast-context";
 
-export default function LoginPage() {
+function LoginForm() {
   const { logIn } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const toast = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const nextParam = searchParams.get("next");
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -30,7 +32,8 @@ export default function LoginPage() {
       return;
     }
     toast.show("Logged in");
-    router.push("/profile");
+    const next = searchParams.get("next");
+    router.push(next && next.startsWith("/") ? next : "/profile");
   }
 
   return (
@@ -64,11 +67,19 @@ export default function LoginPage() {
         </form>
         <p className="mt-6 text-center text-sm text-silver/70">
           New here?{" "}
-          <Link href="/signup" className="text-chrome-bright">
+          <Link href={`/signup${nextParam ? `?next=${encodeURIComponent(nextParam)}` : ""}`} className="text-chrome-bright">
             Create an account
           </Link>
         </p>
       </div>
     </Container>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }

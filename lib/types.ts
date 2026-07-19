@@ -141,3 +141,14 @@ export interface User {
   email: string;
   role: "customer" | "admin";
 }
+
+export interface StoreSettings {
+  storeName: string;
+  supportEmail: string;
+  supportPhone: string;
+  shippingFlatRate: number;
+  freeShippingThreshold: number;
+  taxRate: number;
+  returnWindowDays: number;
+  codEnabled: boolean;
+}

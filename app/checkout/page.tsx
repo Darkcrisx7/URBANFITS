@@ -13,8 +13,8 @@ import { Input, Label, Textarea } from "@/components/ui/input";
 import { useCart } from "@/contexts/cart-context";
 import { useAuth } from "@/contexts/auth-context";
 import { formatCurrency, generateOrderId } from "@/lib/utils";
-import { getCoupons, saveOrder, upsertCustomerByEmail, upsertCustomerRecord } from "@/lib/storage";
-import { Order, OrderItem, Coupon } from "@/lib/types";
+import { getCoupons, saveOrder, upsertCustomerByEmail, upsertCustomerRecord, getSettings } from "@/lib/storage";
+import { Order, OrderItem, Coupon, StoreSettings } from "@/lib/types";
 import { useToast } from "@/contexts/toast-context";
 
 const checkoutSchema = z.object({
@@ -39,10 +39,15 @@ function CheckoutInner() {
   const couponCode = searchParams.get("coupon");
   const [placing, setPlacing] = useState(false);
   const [coupons, setCoupons] = useState<Coupon[]>([]);
+  const [settings, setSettings] = useState<StoreSettings | null>(null);
 
   useEffect(() => {
     if (couponCode) getCoupons().then(setCoupons);
   }, [couponCode]);
+
+  useEffect(() => {
+    getSettings().then(setSettings);
+  }, []);
 
   const {
     register,
@@ -61,8 +66,12 @@ function CheckoutInner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
-  const shipping = cart.subtotal > 2000 || cart.subtotal === 0 ? 0 : 99;
-  const tax = Math.round(cart.subtotal * 0.05);
+  const shippingFlatRate = settings?.shippingFlatRate ?? 99;
+  const freeShippingThreshold = settings?.freeShippingThreshold ?? 2000;
+  const taxRatePct = settings?.taxRate ?? 5;
+
+  const shipping = cart.subtotal > freeShippingThreshold || cart.subtotal === 0 ? 0 : shippingFlatRate;
+  const tax = Math.round(cart.subtotal * (taxRatePct / 100));
 
   let discount = 0;
   if (couponCode) {

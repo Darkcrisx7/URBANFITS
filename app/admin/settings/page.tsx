@@ -2,19 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input, Label, Textarea } from "@/components/ui/input";
+import { Input, Label } from "@/components/ui/input";
 import { useToast } from "@/contexts/toast-context";
-
-interface StoreSettings {
-  storeName: string;
-  supportEmail: string;
-  supportPhone: string;
-  shippingFlatRate: number;
-  freeShippingThreshold: number;
-  taxRate: number;
-  returnWindowDays: number;
-  codEnabled: boolean;
-}
+import { getSettings, saveSettings } from "@/lib/storage";
+import { StoreSettings } from "@/lib/types";
 
 const DEFAULTS: StoreSettings = {
   storeName: "Urban Fits Streetwear",
@@ -29,18 +20,31 @@ const DEFAULTS: StoreSettings = {
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<StoreSettings>(DEFAULTS);
+  const [loaded, setLoaded] = useState(false);
+  const [saving, setSaving] = useState(false);
   const toast = useToast();
 
   useEffect(() => {
-    const raw = window.localStorage.getItem("uf_settings");
-    if (raw) setSettings(JSON.parse(raw));
+    getSettings().then((s) => {
+      setSettings(s);
+      setLoaded(true);
+    });
   }, []);
 
-  function save(e: React.FormEvent) {
+  async function save(e: React.FormEvent) {
     e.preventDefault();
-    window.localStorage.setItem("uf_settings", JSON.stringify(settings));
-    toast.show("Settings saved");
+    setSaving(true);
+    try {
+      await saveSettings(settings);
+      toast.show("Settings saved — live on the storefront now");
+    } catch {
+      toast.show("Couldn't save — check your Supabase connection", "error");
+    } finally {
+      setSaving(false);
+    }
   }
+
+  if (!loaded) return null;
 
   return (
     <div>
@@ -74,6 +78,10 @@ export default function AdminSettingsPage() {
 
         <div className="rounded-2xl border border-stone-200 bg-paper p-6">
           <h2 className="mb-4 font-display text-lg font-medium">Shipping & Tax</h2>
+          <p className="mb-4 text-xs text-stone-400">
+            These numbers drive the real shipping/tax math at checkout — changes here take effect
+            on the live site immediately after saving.
+          </p>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <Label>Flat Shipping Rate (₹)</Label>
@@ -95,6 +103,7 @@ export default function AdminSettingsPage() {
               <Label>Tax Rate (%)</Label>
               <Input
                 type="number"
+                step="0.1"
                 value={settings.taxRate}
                 onChange={(e) => setSettings({ ...settings, taxRate: Number(e.target.value) })}
               />
@@ -126,8 +135,8 @@ export default function AdminSettingsPage() {
           </p>
         </div>
 
-        <Button type="submit" size="lg">
-          Save Settings
+        <Button type="submit" size="lg" disabled={saving}>
+          {saving ? "Saving…" : "Save Settings"}
         </Button>
       </form>
     </div>

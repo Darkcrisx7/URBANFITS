@@ -1,4 +1,4 @@
-import { Product, Order, Coupon, Banner, Review, Customer } from "./types";
+import { Product, Order, Coupon, Banner, Review, Customer, StoreSettings } from "./types";
 import { supabase, PRODUCT_IMAGES_BUCKET } from "./supabase-client";
 
 /**
@@ -474,4 +474,60 @@ export function getAddresses() {
 }
 export function setAddresses(addresses: import("./types").Address[]) {
   write(KEYS.addresses, addresses);
+}
+
+// ---------- Store Settings (Supabase-backed) ----------
+// Single row, id = 'default'. Public read (checkout needs shipping/tax
+// rates), admin-only write — see supabase/rls.sql.
+const DEFAULT_SETTINGS: StoreSettings = {
+  storeName: "Urban Fits Streetwear",
+  supportEmail: "support@urbanfits.store",
+  supportPhone: "+91 80000 00000",
+  shippingFlatRate: 99,
+  freeShippingThreshold: 2000,
+  taxRate: 5,
+  returnWindowDays: 7,
+  codEnabled: true,
+};
+
+function rowToSettings(row: any): StoreSettings {
+  return {
+    storeName: row.store_name ?? DEFAULT_SETTINGS.storeName,
+    supportEmail: row.support_email ?? DEFAULT_SETTINGS.supportEmail,
+    supportPhone: row.support_phone ?? DEFAULT_SETTINGS.supportPhone,
+    shippingFlatRate: row.shipping_flat_rate ?? DEFAULT_SETTINGS.shippingFlatRate,
+    freeShippingThreshold: row.free_shipping_threshold ?? DEFAULT_SETTINGS.freeShippingThreshold,
+    taxRate: Number(row.tax_rate ?? DEFAULT_SETTINGS.taxRate),
+    returnWindowDays: row.return_window_days ?? DEFAULT_SETTINGS.returnWindowDays,
+    codEnabled: row.cod_enabled ?? DEFAULT_SETTINGS.codEnabled,
+  };
+}
+
+export async function getSettings(): Promise<StoreSettings> {
+  const { data, error } = await supabase.from("settings").select("*").eq("id", "default").maybeSingle();
+  if (error || !data) {
+    if (error) console.error("[getSettings] Supabase error:", error.message);
+    return DEFAULT_SETTINGS;
+  }
+  return rowToSettings(data);
+}
+
+export async function saveSettings(settings: StoreSettings): Promise<void> {
+  const { error } = await supabase
+    .from("settings")
+    .update({
+      store_name: settings.storeName,
+      support_email: settings.supportEmail,
+      support_phone: settings.supportPhone,
+      shipping_flat_rate: settings.shippingFlatRate,
+      free_shipping_threshold: settings.freeShippingThreshold,
+      tax_rate: settings.taxRate,
+      return_window_days: settings.returnWindowDays,
+      cod_enabled: settings.codEnabled,
+    })
+    .eq("id", "default");
+  if (error) {
+    console.error("[saveSettings] Supabase error:", error.message);
+    throw new Error(error.message);
+  }
 }

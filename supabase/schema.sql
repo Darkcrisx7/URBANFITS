@@ -97,6 +97,21 @@ create table if not exists banners (
   active boolean default true
 );
 
+-- Single-row table: store-wide settings (shipping, tax, contact info).
+-- Always read/write the row with id = 'default'.
+create table if not exists settings (
+  id text primary key default 'default',
+  store_name text default 'Urban Fits Streetwear',
+  support_email text default 'support@urbanfits.store',
+  support_phone text default '+91 80000 00000',
+  shipping_flat_rate integer default 99,
+  free_shipping_threshold integer default 2000,
+  tax_rate numeric default 5,
+  return_window_days integer default 7,
+  cod_enabled boolean default true
+);
+insert into settings (id) values ('default') on conflict (id) do nothing;
+
 -- Row Level Security: enable and add policies before going live.
 -- Example (adjust to your auth model):
 -- alter table orders enable row level security;

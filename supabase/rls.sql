@@ -76,6 +76,12 @@ create policy "Admin insert coupons" on coupons for insert with check (is_admin(
 create policy "Admin update coupons" on coupons for update using (is_admin()) with check (is_admin());
 create policy "Admin delete coupons" on coupons for delete using (is_admin());
 
+-- Store settings — public read (checkout needs shipping/tax rates),
+-- admin-only write.
+alter table settings enable row level security;
+create policy "Public read settings" on settings for select using (true);
+create policy "Admin update settings" on settings for update using (is_admin()) with check (is_admin());
+
 -- ---------------------------------------------------------------------
 -- Reviews — anyone can submit one (goes in unapproved); only approved
 -- ones are publicly visible; admin sees and moderates everything.

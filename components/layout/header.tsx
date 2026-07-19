@@ -4,12 +4,67 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Heart, ShoppingBag, User, Menu, X } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { useCart } from "@/contexts/cart-context";
 import { useWishlist } from "@/contexts/wishlist-context";
 import { CATEGORIES } from "@/lib/mock-data";
+
+// Rendered outside the header via a portal — the header has backdrop-blur,
+// and CSS backdrop-filter secretly creates a new "containing block" for any
+// `position: fixed` descendant. That meant this drawer was being fixed
+// relative to the ~80px header bar instead of the actual viewport, which is
+// what caused it to collapse and overlap with the page content behind it.
+// Portaling straight to <body> sidesteps that entirely.
+function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
+    <AnimatePresence>
+      {open && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 z-[70] bg-black/60 backdrop-blur-sm lg:hidden"
+            aria-hidden="true"
+          />
+          <motion.div
+            initial={{ x: "-100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-y-0 left-0 z-[80] w-80 max-w-[85vw] border-r border-white/10 bg-graphite p-6 shadow-glass lg:hidden"
+          >
+            <div className="mb-8 flex items-center justify-between">
+              <span className="font-display text-lg font-semibold text-bone">URBANFITS</span>
+              <button onClick={onClose} aria-label="Close menu" className="text-bone">
+                <X size={20} />
+              </button>
+            </div>
+            <nav className="flex flex-col gap-5">
+              {CATEGORIES.map((c) => (
+                <Link
+                  key={c.key}
+                  href={`/shop/${c.key}`}
+                  onClick={onClose}
+                  className="text-lg font-medium text-silver"
+                >
+                  {c.label}
+                </Link>
+              ))}
+            </nav>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>,
+    document.body
+  );
+}
 
 export function Header() {
   const pathname = usePathname();
@@ -115,36 +170,7 @@ export function Header() {
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            initial={{ x: "-100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-y-0 left-0 z-[60] w-80 border-r border-white/10 bg-graphite p-6 shadow-glass lg:hidden"
-          >
-            <div className="mb-8 flex items-center justify-between">
-              <span className="font-display text-lg font-semibold text-bone">URBANFITS</span>
-              <button onClick={() => setMenuOpen(false)} aria-label="Close menu" className="text-bone">
-                <X size={20} />
-              </button>
-            </div>
-            <nav className="flex flex-col gap-5">
-              {CATEGORIES.map((c) => (
-                <Link
-                  key={c.key}
-                  href={`/shop/${c.key}`}
-                  onClick={() => setMenuOpen(false)}
-                  className="text-lg font-medium text-silver"
-                >
-                  {c.label}
-                </Link>
-              ))}
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
     </header>
   );
 }

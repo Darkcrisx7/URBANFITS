@@ -10,7 +10,15 @@ import { formatCurrency } from "@/lib/utils";
 import { Product } from "@/lib/types";
 import { HeroScene } from "@/components/home/hero-scene";
 
-export function Hero({ featuredA, featuredB }: { featuredA?: Product; featuredB?: Product }) {
+export function Hero({
+  featuredA,
+  featuredB,
+  freeShippingThreshold = 2000,
+}: {
+  featuredA?: Product;
+  featuredB?: Product;
+  freeShippingThreshold?: number;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y1 = useTransform(scrollYProgress, [0, 1], [0, 120]);
@@ -131,7 +139,7 @@ export function Hero({ featuredA, featuredB }: { featuredA?: Product; featuredB?
         <div className="marquee-track animate-marquee">
           {[...Array(2)].map((_, i) => (
             <div key={i} className="flex shrink-0 items-center gap-10 pr-10 font-mono text-[11px] uppercase tracking-widest2 text-chrome">
-              <span>Free shipping over ₹2000</span>
+              <span>Free shipping over {formatCurrency(freeShippingThreshold)}</span>
               <span>Cash on delivery available</span>
               <span>New drops every month</span>
               <span>Easy 7-day returns</span>

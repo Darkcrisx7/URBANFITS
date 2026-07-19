@@ -17,7 +17,15 @@ import { ProductGrid } from "./product-grid";
 
 const RECENT_KEY = "uf_recently_viewed";
 
-export function ProductDetail({ product, allProducts }: { product: Product; allProducts: Product[] }) {
+export function ProductDetail({
+  product,
+  allProducts,
+  freeShippingThreshold = 2000,
+}: {
+  product: Product;
+  allProducts: Product[];
+  freeShippingThreshold?: number;
+}) {
   const [size, setSize] = useState(product.sizes[0]);
   const [color, setColor] = useState(product.colors[0].name);
   const [quantity, setQuantity] = useState(1);
@@ -181,7 +189,7 @@ export function ProductDetail({ product, allProducts }: { product: Product; allP
             <div className="mt-8 grid grid-cols-3 gap-3 border-t border-white/10 pt-6 text-center">
               <div>
                 <Truck size={18} className="mx-auto mb-1.5 text-silver/70" />
-                <p className="text-xs text-silver/70">Free shipping over ₹2000</p>
+                <p className="text-xs text-silver/70">Free shipping over {formatCurrency(freeShippingThreshold)}</p>
               </div>
               <div>
                 <RotateCcw size={18} className="mx-auto mb-1.5 text-silver/70" />

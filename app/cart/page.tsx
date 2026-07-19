@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Minus, Plus, X, ArrowRight, Tag } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/cart-context";
 import { formatCurrency, cn } from "@/lib/utils";
-import { getCoupons } from "@/lib/storage";
+import { getCoupons, getSettings } from "@/lib/storage";
 import { useToast } from "@/contexts/toast-context";
 
 export default function CartPage() {
@@ -16,6 +16,17 @@ export default function CartPage() {
   const toast = useToast();
   const [couponInput, setCouponInput] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number } | null>(null);
+  const [shippingFlatRate, setShippingFlatRate] = useState(99);
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState(2000);
+  const [taxRatePct, setTaxRatePct] = useState(5);
+
+  useEffect(() => {
+    getSettings().then((s) => {
+      setShippingFlatRate(s.shippingFlatRate);
+      setFreeShippingThreshold(s.freeShippingThreshold);
+      setTaxRatePct(s.taxRate);
+    });
+  }, []);
 
   async function applyCoupon() {
     const coupons = await getCoupons();
@@ -36,8 +47,8 @@ export default function CartPage() {
     toast.show(`${match.code} applied`);
   }
 
-  const shipping = cart.subtotal > 2000 || cart.subtotal === 0 ? 0 : 99;
-  const tax = Math.round(cart.subtotal * 0.05);
+  const shipping = cart.subtotal > freeShippingThreshold || cart.subtotal === 0 ? 0 : shippingFlatRate;
+  const tax = Math.round(cart.subtotal * (taxRatePct / 100));
   const discount = appliedCoupon?.discount ?? 0;
   const total = Math.max(0, cart.subtotal + shipping + tax - discount);
 

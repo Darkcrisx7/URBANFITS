@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getProducts, getProductBySlug } from "@/lib/storage";
+import { getProducts, getProductBySlug, getSettings } from "@/lib/storage";
 import { ProductDetail } from "@/components/product/product-detail";
 
 // New products / edits happen through the admin panel at runtime, so this
@@ -22,6 +22,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const product = await getProductBySlug(slug);
   if (!product) notFound();
   const allProducts = await getProducts();
+  const settings = await getSettings();
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -52,7 +53,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <ProductDetail product={product} allProducts={allProducts} />
+      <ProductDetail product={product} allProducts={allProducts} freeShippingThreshold={settings.freeShippingThreshold} />
     </>
   );
 }
